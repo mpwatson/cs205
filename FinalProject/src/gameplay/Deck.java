@@ -1,6 +1,6 @@
 package gameplay;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * An ordered list of cards
@@ -25,7 +25,7 @@ public class Deck {
 
 	//return top card from discard pile
 	public Card drawCardDiscard(){
-		return discard.pop()
+		return discard.pop();
 	}
 
 	//check the top card of the deck
