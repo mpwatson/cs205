@@ -4,18 +4,12 @@
  *
  */
 public class Player {
-	/**
-	 * TODO: Add all variables the player needs here
-	 */
+	
 	private String name;
 	private Hand playerHand;
 	
 	public Player(){
-		/**
-		 * TODO: Initialize the player
-		 */
-		 playerHand = new Hand();
-		
+		 playerHand = new Hand();	
 	}
 	
 	/**
@@ -37,6 +31,9 @@ public class Player {
 		return name;
 	}
 	
+	/**
+	 * returns direct access to the player's hand
+	 **/
 	public Hand getHand(){
 		return playerHand;
 	}

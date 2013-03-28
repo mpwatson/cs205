@@ -10,8 +10,6 @@ public class Deck {
 	private Stack<Card> discard;
 	
 	public Deck(){
-		deck = new Stack<Card>();
-		discard = new Stack<Card>();
 		buildRatCatDeck();
 	}
 
@@ -54,10 +52,8 @@ public class Deck {
 
 	//build the deck with the right number of cards
 	public void buildRatCatDeck(){
-		/**
-		 * TODO: Set contents equal to a standard Rat-A-Tat deck
-		 * Note: It just needs 54 cards, four of each 0-8, nine 9, 3 of each 10-12
-		 */
+		deck = new Stack<Card>();
+		discard = new Stack<Card>();
 		
 		for(int i = 0; i<9; i++){
 			if(i<3){

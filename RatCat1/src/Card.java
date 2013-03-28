@@ -9,7 +9,7 @@ public class Card {
 	
 	private int rank;
 	
-	public Card(int iRank){
+	Card(int iRank){
 		rank = iRank;
 	}
 	
@@ -17,18 +17,13 @@ public class Card {
 		return rank;
 	}
 	
-	public boolean isPowerCard(){
-		return ((rank == 10) || (rank == 11) || (rank == 12));
+	// the image of a face-up card
+	public static String getImage(int iRank){
+		return "gameMain/cards/" + Integer.toString(iRank) + ".png";
 	}
 	
-	/**
-	 * TODO: Complete this class
-	 * Note: Need method that gets image given the rank, for example if rank is 1 it
-	 * 		 returns "mainGame/cards/1.png"
-	 */
-
-	public String getImage(int iRank){
-		return "../../mainGame/cards/1.png";
+	public boolean isPowerCard(){
+		return ((rank == 10) || (rank == 11) || (rank == 12));
 	}
 
 	public String toString(){

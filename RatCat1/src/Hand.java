@@ -14,9 +14,6 @@ public class Hand {
 	/**
 	 * Add a new card to hand, Used for dealing opening hands
 	 * @param newCard
-	 *
-	 *	Changed loop to i<4 instead of 3, need 4 cards:0,1,2,3 - S.K.
-	 *
 	 */
 	public void addCard(Card newCard){
 		for(int i = 0;i < 4;i++){
@@ -26,6 +23,15 @@ public class Hand {
 			}//if
 		}//for
 	}//addCard
+	
+	/**
+	 * put supplied card into supplied index
+	 * @param newCard
+	 * @param index
+	 **/
+	public void addCardByIndex(Card newCard, int index) {
+		contents[index] = newCard;
+	}
 	
 	/**
 	 * return card at supplied index in hand without removal from hand
@@ -58,9 +64,13 @@ public class Hand {
 	 *
 	 *	 -S.K.
 	 **/
-	public void removeCard(int index){
-		if(contents[index] != null)
+	public Card removeCard(int index){
+		if(contents[index] != null) {
+			Card temp = contents[index];
 			contents[index] = null;
+			return temp;
+		}
+		return null; 
 	}//removeCard
 	
 	/**
