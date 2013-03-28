@@ -74,36 +74,39 @@ public class Main {
 		System.out.println("Take from Discard Pile (1) or Draw (2) or Yell Rat-A-Tat-Cat (3)");
 		String input = scanner.nextLine();
 		int inputInt = Integer.parseInt(input);
-		if (inputInt == 1) 
-			picked = deck.drawCardDiscard();
-		else 
-			picked = deck.drawCardDeck();
-		if (picked.isPowerCard()) {
-			System.out.println("YOU PICKED POWER CARD!");
-			if (picked.getRank() == 10) {
-				drawTwo();
-			}
-			else if (picked.getRank() == 11) {
-				peek();
-			}
-			else {
-				swap();
+		if ((inputInt == 1) || (inputInt == 2)) {
+			
+			if (inputInt == 1) 
+				picked = deck.drawCardDiscard();
+			else 
+				picked = deck.drawCardDeck();
+			
+			if (picked.isPowerCard()) {
+				System.out.println("YOU PICKED POWER CARD!");
+				if (picked.getRank() == 10) {
+					drawTwo();
+				}
+				else if (picked.getRank() == 11) {
+					peek();
+				}
+				else {
+					swap();
+				}
+			} else {
+			    System.out.println("PICK WHERE TO PUT " + picked.getRank() + ".  (Or -1 to discard)");
+			    String inputTwo = scanner.nextLine();
+			    int inputTwoInt = Integer.parseInt(inputTwo);
+			    if (inputTwoInt != -1) {
+			        left = player.getHand().swapCard(inputTwoInt, picked);
+			        if (!(left.isPowerCard()))
+			          deck.discard(left);
+			    }
+			    else
+				    deck.discard(picked);
 			}
 		}
-		else if (inputInt == 2){
-		  System.out.println("PICK WHERE TO PUT " + picked.getRank() + ".  (Or -1 to discard)");
-		  String inputTwo = scanner.nextLine();
-		  int inputTwoInt = Integer.parseInt(inputTwo);
-		  if (inputTwoInt != -1) {
-		      left = player.getHand().swapCard(inputTwoInt, picked);
-		      deck.discard(left);
-		  }
-		  else
-			  deck.discard(picked);
-		}
-		else {
+		else if (inputInt == 3)
 			callRatCat();
-		}
 	}
 	
 	// Right now just random chances
@@ -130,6 +133,7 @@ public class Main {
 				deck.discard(picked);
 			else
 				opponent.getHand().addCardByIndex(picked,randomSpot);
+			   // FLAG - This should be a swap, not an insert
 		}
 		
 	} // Needs some form of AI, even basic for testing purposes
