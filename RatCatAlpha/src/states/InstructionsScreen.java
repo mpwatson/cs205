@@ -13,6 +13,10 @@ import main.StateManager;
  */
 public class InstructionsScreen extends GameState {
 	
+	private int screen = 1;
+	
+	private int screenCount = 3;
+	
 	public float stateID(){
 		return StateManager.instructionsID;
 	}
@@ -47,6 +51,19 @@ public class InstructionsScreen extends GameState {
 		if(getObject("play").isInRange(mousePos)){
 			// play clicked - begin game
 			Game.setState(StateManager.modeMenuID);
+			return;
+		}
+		
+		if(getObject("left").isInRange(mousePos)){
+			// left click - move back
+			screen = Math.max(1, screen--);
+			//getObject("main").
+			return;
+		}
+		
+		if(getObject("right").isInRange(mousePos)){
+			// left click - move forward
+			screen = Math.min(screenCount, screen--);
 			return;
 		}
 	}

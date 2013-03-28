@@ -17,70 +17,53 @@ public class Hand {
 	 * @param newCard
 	 */
 	public void addCard(Card newCard){
-		for(int i = 0;i < 4;i++){
+		for(int i = 0;i < 3;i++){
 			if(contents[i] == null){
 				contents[i] = newCard;
 				return;
-			}//if
-		}//for
-	}//addCard
-	
+			}
+		}
+	}
 	/**
-	 * put supplied card into supplied index
-	 * @param newCard
+	 * Return card with supplied index from hand without removal from hand
 	 * @param index
-	 **/
-	public void addCardByIndex(Card newCard, int index) {
-		contents[index] = newCard;
+	 * @return
+	 */
+	public Card getCard(int index){
+		return (index >= 0 && index <= 3) ? contents[index] : null;
 	}
 	
 	/**
-	 * return card at supplied index in hand without removal from hand
-	 * @param index
-	 *
-	 * -S.K.
-	 **/
-	public Card getCard(int index){
-		return (index >= 0 && index <= 3) ? contents[index] : null;
-	}//getCard
-	
-	 
-	 /**
 	 * remove all cards from hand setting each to null
 	 *
 	 * -S.K.
-	 **/
-	 public void clearHand(){
-	 	for(int i = 0;i < 4;i++){
+	**/
+	public void clearHand(){
+		for(int i = 0;i < 4;i++){
 			if(contents[i] != null){
 				contents[i] = null;
 				//return;
 			}//if
 		}//for
-	 }//clearHand
+	}//clearHand
 	
-	 /**
-	 * remove card @ index i in hand if !null
-	 * @param index
-	 *
-	 *	 -S.K.
-	 **/
-	public Card removeCard(int index){
-		if(contents[index] != null) {
-			Card temp = contents[index];
-			contents[index] = null;
-			return temp;
-		}
-		return null; 
+	/**
+	* remove card @ index i in hand if !null
+	* @param index
+	*
+	* -S.K.
+	**/
+	public void removeCard(int index){
+		if(contents[index] != null) contents[index] = null;
 	}//removeCard
 	
 	/**
 	* adds a new card to the hand and returns the card that has been replaced
-	* index is the location in the array of the card to remove, 
+	* index is the location in the array of the card to remove,
 	* c is the new card to store in the hand
 	* @param index, c
 	*
-	*  -S.K.
+	* -S.K.
 	**/
 	public Card swapCard(int index, Card c){
 		Card temp = null;
@@ -88,22 +71,21 @@ public class Hand {
 			temp = contents[index];
 			contents[index] = c;
 		}//if
-		
+	
 		return temp;
-		
+	
 	}//swapCard
 	
 	/**
-	 * display hand contents for testing
-	 *
-	 *	 -S.K.
-	 **/
+	* display hand contents for testing
+	*
+	* -S.K.
+	**/
 	public void printHand(){
 		for(int i = 0;i < 4;i++){
 			if(contents[i] != null){
 				System.out.println(contents[i]);
 			}//if
 		}//for
-	} //printHand
-}//Class 
-	
+	}//printHand
+}
