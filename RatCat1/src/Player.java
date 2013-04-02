@@ -5,8 +5,8 @@
  */
 public class Player {
 	
-	private String name;
-	private Hand playerHand;
+	protected String name;
+	protected Hand playerHand;
 	
 	public Player(){
 		 playerHand = new Hand();	

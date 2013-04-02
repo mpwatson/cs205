@@ -8,14 +8,14 @@ public class Main {
 	 */
     private static Scanner scanner;
     private static Player player;
-    private static Player opponent;
+    private static ComputerPlayer opponent;
     private static Deck deck;
     private static boolean ratCalled;
     
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 	    player = new Player();
-	    opponent = new Player();
+	    opponent = new ComputerPlayer(1);
 	    deck = new Deck();
 	    scanner = new Scanner(System.in);
 	    ratCalled = false;
@@ -28,7 +28,15 @@ public class Main {
 	    System.out.println("LAST: " + player.getHand().getCard(3).getRank());
 	    
 	    while (!(isGameOver())) {
+	    	System.out.println("%%%%%%%%%%%%%%%%%\n");
+	    	System.out.println("Player's Hand:\n");
+	    	player.printHand();
+	    	System.out.println("%%%%%%%%%%%%%%%%%\n");
 	        humanTurn();
+	        System.out.println("\n\n\n%%%%%%%%%%%%%%%%%\n");
+	        System.out.println("Computer's Hand:\n");
+	        opponent.printHand();
+	        System.out.println("%%%%%%%%%%%%%%%%%\n");
 	        computerTurn();
 	    }
 	    
@@ -109,37 +117,97 @@ public class Main {
 			callRatCat();
 	}
 	
-	// Right now just random chances
+	//Some AI is now working
 	public static void computerTurn() {
 		Card picked;
 		if (!deck.discardHasCards()) {
 			picked = deck.drawCardDeck();
-		} else if (!deck.deckHasCards()) {
-			picked = deck.drawCardDiscard();
-		} else {
-			int randomChoice = (int)(Math.random());
-			if (randomChoice == 0)
-				picked = deck.drawCardDeck();
-			else
+		}else{
+			if(opponent.decideDrawCard(deck.peekDiscard())){
 				picked = deck.drawCardDiscard();
+			}else{
+				picked = deck.drawCardDeck();
+			}
 		}
-		if (picked.isPowerCard()) {
-			// Do computer power card stuff
-			// Right now just discards
+		if(!picked.isPowerCard()){
+			//if it is numeric play as usual
+			deck.discard(opponent.playCard(picked));
+		}else{
+			//handle the playing of a power card
+			computerPowerCard(picked);	
 		}
-		else {
-			int randomSpot = (int)(Math.random()*4);
-			if (randomSpot == 4)
-				deck.discard(picked);
-			else
-				opponent.getHand().addCardByIndex(picked,randomSpot);
-			   // FLAG - This should be a swap, not an insert
-		}
-		
+
+		opponent.incrementTurnCounter();
+		ratCalled = opponent.callRatATat();
 	} // Needs some form of AI, even basic for testing purposes
 	
 	// Make separate power card methods for AI
 	
+	public static void computerPowerCard(Card card){
+		switch(card.getRank()){
+			case 10:
+				//discard the draw 2
+				deck.discard(card);
+				//pick another card
+				Card newPick = deck.drawCardDeck();
+				Card discard;
+
+				//I know this next section looks ewwww, but so is trying to account for all possible draw 2 situtaions
+				if(newPick.isPowerCard()){
+					//if it is a power card just discard it and pick another unless it is a draw 2 again
+					if(newPick.getRank() == 10){
+						computerPowerCard(newPick);
+						return;
+					}
+					deck.discard(newPick);
+					//draw another
+					Card newerPick = deck.drawCardDeck();
+					//could be another power card
+					if(newerPick.isPowerCard()){
+						//call the function that handles power cards again with it to handle it then break out
+						computerPowerCard(newerPick);
+						return;
+					}else{
+						//its the last card we could choose so have to try and play it
+						discard = opponent.playDrawTwo(newerPick,false);
+					}
+				}else{
+					//call the function that will see if it is worthwhile to play
+					discard = opponent.playDrawTwo(newPick,true);
+					//if discard is null then the AI did not want it
+					if(discard == null){
+						//discard the new pick to keep the discard pile in order
+						deck.discard(newPick);
+						//draw another
+						Card newerPick = deck.drawCardDeck();
+						if(!newerPick.isPowerCard()){
+							//if it is numeric make a decision get the discard after the AI decides what to do with it
+							discard = opponent.playDrawTwo(newerPick,false);
+						}else{
+							computerPowerCard(newPick);
+							return;
+						}
+					}	
+				}
+				//discard the last card
+				deck.discard(discard);
+				break;
+			case 11:
+				deck.discard(opponent.playCard(card));
+				break;
+			case 12:
+				//swap[0] = 5 indicates not to use the swap
+				int[] swap = opponent.playSwap();
+				if(swap[0]!=5){
+					Card playerCard = player.getHand().removeCard(swap[1]);
+					Card computerCard = opponent.getHand().removeCard(swap[0]);
+					player.getHand().addCardByIndex(computerCard, swap[1]);
+					opponent.getHand().addCardByIndex(playerCard, swap[0]);  
+				}
+				deck.discard(card);
+				break;
+		}
+	}
 	public static void peek() {
 	    System.out.println("YOU DREW PEEK. PICK WHICH CARD TO PEEK AT: ");
 	    String peekInput = scanner.nextLine();

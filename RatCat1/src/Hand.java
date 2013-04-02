@@ -100,7 +100,7 @@ public class Hand {
 	public void printHand(){
 		for(int i = 0;i < 4;i++){
 			if(contents[i] != null){
-				System.out.println(contents[i]);
+				System.out.println(contents[i].toString());
 			}//if
 		}//for
 	} //printHand
