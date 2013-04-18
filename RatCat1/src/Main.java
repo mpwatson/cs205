@@ -119,6 +119,7 @@ public class Main {
 	
 	//Some AI is now working
 	public static void computerTurn() {
+		opponent.beginTurn();
 		Card picked;
 		if (!deck.discardHasCards()) {
 			picked = deck.drawCardDeck();
