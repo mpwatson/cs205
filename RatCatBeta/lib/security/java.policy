@@ -1,0 +1,6 @@
+/* AUTOMATICALLY GENERATED*/
+/* DO NOT EDIT */
+
+grant {
+  permission java.security.AllPermission;
+};
