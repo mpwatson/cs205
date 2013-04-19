@@ -22,11 +22,13 @@ public class GameMain extends GameState {
 	
 	public static int difficulty = 1;
 	
-	public static int longWait = 3000;
-	public static int shortWait = 2000;
+	private static boolean loaded = false;
 	
-	public static float timer = 0;
-	public static float timerId = 0;
+	private int longWait = 3000;
+	private int shortWait = 2000;
+	
+	private float timer = 0;
+	private float timerId = 0;
 	
     private Player player;
     private ComputerPlayer opponent;
@@ -41,6 +43,8 @@ public class GameMain extends GameState {
     
     private boolean newGame;
 	
+    private int clickIndex;
+    
 	private final Font displayFont = new Font("Sans Serif", Font.PLAIN, 16);
 	
 	public float stateID(){
@@ -73,7 +77,10 @@ public class GameMain extends GameState {
 	}
 	
 	public void entered(){
-		addObject("display", "Welcome.", displayFont, 400, 240, Color.black);
+		if(!loaded){
+			addObject("display", "Welcome.", displayFont, 400, 240, Color.black);
+			loaded = true;
+		}
 		
 		if(Switchboard.getLastState() == StateManager.modeMenuID){
 			newGame = true;
@@ -83,6 +90,8 @@ public class GameMain extends GameState {
 	}
 	
 	public void handleFrame(Point mousePos) {
+		if(gameState == 99) return;
+		
 		if(newGame){
 			newGame = false;
 			startGame();
@@ -193,7 +202,7 @@ public class GameMain extends GameState {
 		}
 		
 		if(index >= 5 && index <= 8){
-			getObject("cCard" + index).setImage(findImage(newImage), 0);
+			getObject("cCard" + (index - 4)).setImage(findImage(newImage), 0);
 			return;
 		}
 		
@@ -214,12 +223,16 @@ public class GameMain extends GameState {
 	public void startGame(){
 		
 	    player = new Player();
-	    opponent = new ComputerPlayer(1);
+	    opponent = new ComputerPlayer(difficulty);
 	    deck = new Deck();
 	    ratCalled = false;
 	    gameState = 0; // State 0 = start of the game
 		deck.buildRatCatDeck();
 		deck.shuffle();
+		
+		picked = null;
+		mySwap = null;
+		yourSwap = null;
 		
 		for(int i = 0;i < 4;i++){
 			player.getHand().addCardByIndex(deck.drawCardDeck(), i);
@@ -233,12 +246,30 @@ public class GameMain extends GameState {
 		}
 		deck.discard(topCard);
 		changeDiscardPicture(topCard.getImage());
+		
 		changeCardPicture(1, player.getHand().getCard(0).getImage());
+		changeCardPicture(2, Card.backImage);
+		changeCardPicture(3, Card.backImage);
 		changeCardPicture(4, player.getHand().getCard(3).getImage());
+		changeCardPicture(5, Card.backImage);
+		changeCardPicture(6, Card.backImage);
+		changeCardPicture(7, Card.backImage);
+		changeCardPicture(8, Card.backImage);
+		
+		setText("Peek at two of your cards");
 		
 		// *WAIT*
 		timer = longWait;
 		timerId = 1;
+	}
+	
+	public void startGame2(){
+		changeCardPicture(1, Card.backImage);
+		changeCardPicture(4, Card.backImage);
+		
+	    //System.out.println("Here are the cards in the First and Last position of your hand");
+	    //System.out.println("FIRST: " + player.getHand().getCard(0).getRank());
+	    //System.out.println("LAST: " + player.getHand().getCard(3).getRank());
 	}
 	
 	public void peek() {
@@ -293,6 +324,20 @@ public class GameMain extends GameState {
 		timerId = 2;
 	}
 	
+	public void drawTwo2(){
+		//System.out.println("YOU DREW DRAW TWO. DRAW YOUR FIRST CARD.");
+		picked = deck.drawCardDeck();
+		
+		changeCardPicture(9, picked.getImage());
+		
+		if (picked.isPowerCard()) {
+			firstDrawPowerCard();
+		}
+		else {
+			firstDrawNormal();
+		}
+	}
+	
 	public boolean isGameOver() {
 		if (deck.deckHasCards())
 		  return (ratCalled);
@@ -317,6 +362,16 @@ public class GameMain extends GameState {
 		String resultString = "Player 1: " + playerOneScore + ". Player 2: " + playerTwoScore + ".";
 		
 		setText(resultString);
+		
+		changeCardPicture(1, player.getHand().getCard(0).getImage());
+		changeCardPicture(2, player.getHand().getCard(1).getImage());
+		changeCardPicture(3, player.getHand().getCard(2).getImage());
+		changeCardPicture(4, player.getHand().getCard(3).getImage());
+		
+		changeCardPicture(5, opponent.getHand().getCard(0).getImage());
+		changeCardPicture(6, opponent.getHand().getCard(1).getImage());
+		changeCardPicture(7, opponent.getHand().getCard(2).getImage());
+		changeCardPicture(8, opponent.getHand().getCard(3).getImage());
 	}
 	
 	public Card resolvePowerCard(Card testCard) {
@@ -341,6 +396,19 @@ public class GameMain extends GameState {
 		// *WAIT*
 		timer = shortWait;
 		timerId = 3;
+	}
+	
+	public void handlePowerCard2(){
+		if (picked.getRank() == 10) {
+			drawTwo();
+		}
+		else if (picked.getRank() == 11) {
+			peek();
+		}
+		else {
+			swap();
+		}
+		return;
 	}
 	
 	public void ratCatClicked() {
@@ -439,9 +507,9 @@ public class GameMain extends GameState {
 			
 			setText("Computer's turn begins now.");
 			
-			// *WAIT* *FIX*
-			
-			computerTurn();
+			// *WAIT*
+			timer = shortWait;
+			timerId = 8;
 		}
 	}
 	
@@ -546,6 +614,53 @@ public class GameMain extends GameState {
 		timerId = 5;
 	}
 	
+	public void firstDrawPowerCard2(){
+		if (picked.getRank() == 10) {
+			//System.out.println("You drew another Draw Two, start again!");
+			
+			setText("You have drawn another Draw Two card, start again!");
+			// *WAIT*
+			timer = shortWait;
+			timerId = 6;
+			return;
+		}
+		else if (picked.getRank() == 11) {
+			gameState = 9;
+			//System.out.println("YOU DREW A PEEK (0 TO USE OR 1 TO USE YOUR SECOND DRAW)");
+			
+			setText("You drew a peek card, click yes to use, or no to try your second draw.");
+			/* Method ends, wait for click
+			// Need yes or no buttons to pop up
+			
+			String drawTwoPeekDec = scanner.nextLine();
+			int drawTwoPeekDecInt = Integer.parseInt(drawTwoPeekDec);
+			if (drawTwoPeekDecInt == 0) {
+			    clickedYes();
+			}
+			else if (drawTwoPeekDecInt == 1) {
+				clickedNo();
+			}
+			*/
+		}
+		else {
+			gameState = 10;
+			//System.out.println("YOU DREW A SWAP (0 TO USE OR 1 TO USE YOUR SECOND DRAW)");
+			
+			setText("You drew a swap card, click yes to use, or not to try your second draw.");
+			/* Method ends, wait for click
+			// Need yes or no buttons to pop up
+			
+			String drawTwoSwapDec = scanner.nextLine();
+			int drawTwoSwapDecInt = Integer.parseInt(drawTwoSwapDec);
+			if (drawTwoSwapDecInt == 0) {
+				clickedYes();
+			} else if (drawTwoSwapDecInt == 1) {
+				clickedNo();
+			}
+			*/
+		}
+	}
+	
 	public void firstDrawNormal() {
 		gameState = 11;
 		//System.out.println("YOU DREW: " + picked.getRank());
@@ -621,7 +736,6 @@ public class GameMain extends GameState {
         //System.out.println("%%%%%%%%%%%%%%%%%\n");
         
         setText("Computer Turn");
-        // *WAIT* *FIX*
         
         gameState = 2; // State 2 is during the opponent's turn
         
@@ -634,27 +748,40 @@ public class GameMain extends GameState {
 				picked = deck.drawCardDeck();
 			}
 		}
+        
+        // *WAIT*
+        timer = shortWait;
+        timerId = 7;
+	} // Needs some form of AI, even basic for testing purposes
+	
+	public void computerTurn2(){
 		if(!picked.isPowerCard()){
 			//if it is numeric play as usual
-			deck.discard(opponent.playCard(picked));
+			Card discarded = opponent.playCard(picked);
+			
+			deck.discard(discarded);
+			changeDiscardPicture(discarded.getImage());
 		}else{
 			//handle the playing of a power card
-			computerPowerCard(picked);	
+			computerPowerCard(picked);
 		}
 
 		opponent.incrementTurnCounter();
-		if (ratCalled == false)
-		  ratCalled = opponent.callRatATat();
+		
+		
+		changeCardPicture(9, Card.blankImage);
 		
 		if (isGameOver()) {
 			//System.out.println("game over");
 			handleGameOver();
 		}
 		else {
+			ratCalled = opponent.callRatATat();
+			
 			//System.out.println("human turn");
 			humanTurn();
 		}
-	} // Needs some form of AI, even basic for testing purposes
+	}
 	
 	// Make separate power card methods for AI
 	
@@ -662,7 +789,8 @@ public class GameMain extends GameState {
 		switch(card.getRank()){
 			case 10:
 				//discard the draw 2
-				deck.discard(card);
+				//deck.discard(card);
+				//changeDiscardPicture(card.getImage());
 				//pick another card
 				Card newPick = deck.drawCardDeck();
 				Card discard;
@@ -675,6 +803,7 @@ public class GameMain extends GameState {
 						return;
 					}
 					deck.discard(newPick);
+					changeDiscardPicture(newPick.getImage());
 					//draw another
 					Card newerPick = deck.drawCardDeck();
 					//could be another power card
@@ -693,6 +822,7 @@ public class GameMain extends GameState {
 					if(discard == null){
 						//discard the new pick to keep the discard pile in order
 						deck.discard(newPick);
+						changeDiscardPicture(newPick.getImage());
 						//draw another
 						Card newerPick = deck.drawCardDeck();
 						if(!newerPick.isPowerCard()){
@@ -706,9 +836,13 @@ public class GameMain extends GameState {
 				}
 				//discard the last card
 				deck.discard(discard);
+				changeDiscardPicture(discard.getImage());
 				break;
 			case 11:
-				deck.discard(opponent.playCard(card));
+				Card discarded = opponent.playCard(card);
+				
+				deck.discard(discarded);
+				changeDiscardPicture(discarded.getImage());
 				break;
 			case 12:
 				//swap[0] = 5 indicates not to use the swap
@@ -719,13 +853,14 @@ public class GameMain extends GameState {
 					player.getHand().addCardByIndex(computerCard, swap[1]);
 					opponent.getHand().addCardByIndex(playerCard, swap[0]);  
 				}
-				deck.discard(card);
+				//deck.discard(card);
+				//changeDiscardPicture(card.getImage());
 				break;
 		}
 	}
 	
 	public void cardClicked(int index){
-		if(index >= 4){
+		if(index <= 4){
 			humanCardClicked(index);
 			return;
 		}
@@ -736,10 +871,10 @@ public class GameMain extends GameState {
 	public void humanCardClicked(int index){ // index is 1-4
 		if (gameState == 3) {
 			Card left = player.getHand().swapCard(index - 1, picked);
-	        if (!(left.isPowerCard()))
+	        if (!(left.isPowerCard())) {
 	          deck.discard(left);
-	        
-	        changeDiscardPicture(left.getImage());
+	          changeDiscardPicture(left.getImage());
+	        }
 	        
 	        endPlayerTurn();
 		} // Handle normal picking and swapping
@@ -749,15 +884,12 @@ public class GameMain extends GameState {
 		    
 		    setText("Peeking at card.");
 		    changeCardPicture(index, player.getHand().getCard(0).getImage());
+		    
+		    clickIndex = index;
 		    // *WAIT*
-		    try {
-				wait(longWait);
-			} catch (InterruptedException e) {
-			}
-		    
-		    changeCardPicture(index, Card.backImage);
-		    
-		    endPlayerTurn();
+		    timer = longWait;
+		    timerId = 9;
+		    return;
 		} // Handle Peek Case
 		else if (gameState == 6) {
 	        mySwap = player.getHand().removeCard(index - 1);
@@ -783,40 +915,17 @@ public class GameMain extends GameState {
 	
 	public void endWait(){
 		if(timerId == 1){
-			changeCardPicture(1, Card.backImage);
-			changeCardPicture(4, Card.backImage);
-			
-		    //System.out.println("Here are the cards in the First and Last position of your hand");
-		    //System.out.println("FIRST: " + player.getHand().getCard(0).getRank());
-		    //System.out.println("LAST: " + player.getHand().getCard(3).getRank());
-		    return;
+			startGame2();
+			return;
 		}
 		
 		if(timerId == 2){
-			//System.out.println("YOU DREW DRAW TWO. DRAW YOUR FIRST CARD.");
-			picked = deck.drawCardDeck();
-			
-			changeCardPicture(9, picked.getImage());
-			
-			if (picked.isPowerCard()) {
-				firstDrawPowerCard();
-			}
-			else {
-				firstDrawNormal();
-			}
+			drawTwo2();
 			return;
 		}
 		
 		if(timerId == 3){
-			if (picked.getRank() == 10) {
-				drawTwo();
-			}
-			else if (picked.getRank() == 11) {
-				peek();
-			}
-			else {
-				swap();
-			}
+			handlePowerCard2();
 			return;
 		}
 		
@@ -826,55 +935,30 @@ public class GameMain extends GameState {
 		}
 		
 		if(timerId == 5){
-			if (picked.getRank() == 10) {
-				//System.out.println("You drew another Draw Two, start again!");
-				
-				setText("You have drawn another Draw Two card, start again!");
-				// *WAIT*
-				timer = shortWait;
-				timerId = 6;
-				return;
-			}
-			else if (picked.getRank() == 11) {
-				gameState = 9;
-				//System.out.println("YOU DREW A PEEK (0 TO USE OR 1 TO USE YOUR SECOND DRAW)");
-				
-				setText("You drew a peek card, click yes to use, or no to try your second draw.");
-				/* Method ends, wait for click
-				// Need yes or no buttons to pop up
-				
-				String drawTwoPeekDec = scanner.nextLine();
-				int drawTwoPeekDecInt = Integer.parseInt(drawTwoPeekDec);
-				if (drawTwoPeekDecInt == 0) {
-				    clickedYes();
-				}
-				else if (drawTwoPeekDecInt == 1) {
-					clickedNo();
-				}
-				*/
-			}
-			else {
-				gameState = 10;
-				//System.out.println("YOU DREW A SWAP (0 TO USE OR 1 TO USE YOUR SECOND DRAW)");
-				
-				setText("You drew a swap card, click yes to use, or not to try your second draw.");
-				/* Method ends, wait for click
-				// Need yes or no buttons to pop up
-				
-				String drawTwoSwapDec = scanner.nextLine();
-				int drawTwoSwapDecInt = Integer.parseInt(drawTwoSwapDec);
-				if (drawTwoSwapDecInt == 0) {
-					clickedYes();
-				} else if (drawTwoSwapDecInt == 1) {
-					clickedNo();
-				}
-				*/
-			}
+			firstDrawPowerCard2();
 			return;
 		}
 		
 		if(timerId == 6){
 			drawTwo();
+			return;
+		}
+		
+		if(timerId == 7){
+			computerTurn2();
+			return;
+		}
+		
+		if(timerId == 8){
+			computerTurn();
+			return;
+		}
+		
+		if(timerId == 9){
+			changeCardPicture(clickIndex, Card.backImage);
+			clickIndex = 0;
+		    endPlayerTurn();
+		    return;
 		}
 	}
 	
