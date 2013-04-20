@@ -1,7 +1,8 @@
 package states;
 
-import java.awt.Point;
+import gui.GameApplet;
 
+import java.awt.Point;
 import main.Switchboard;
 import main.GameState;
 import main.StateManager;
@@ -48,8 +49,9 @@ public class MainMenu extends GameState {
 		}
 		
 		if(getObject("report").isInRange(mousePos)){
-			// exit game
-			Switchboard.setState(StateManager.reportsID);
+			GameApplet.window.call("loadReports", null);
+			
+			return;
 		}
 	}
 	

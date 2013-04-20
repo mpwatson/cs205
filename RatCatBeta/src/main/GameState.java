@@ -7,11 +7,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 import misc.UpdateMode;
 import misc.Vector2D;
@@ -135,11 +133,7 @@ public abstract class GameState {
 	 * @param y
 	 */
 	public void addObject(String iName, String imgFile, int x, int y){
-		try {
-			display.add(new DisplayObject(iName, new ImageEx(ImageIO.read(new File("./" + imgFile)), x, y)));
-		} catch (IOException e) {
-			throw new Error("IOException - GameState.addObject");
-		}
+		display.add(new DisplayObject(iName, new ImageEx(new ImageIcon(getClass().getResource("/" + imgFile)).getImage(), x, y)));
 	}
 	
 	/**
@@ -161,11 +155,7 @@ public abstract class GameState {
 	 * @param y
 	 */
 	public Image findImage(String imgFile){
-		try {
-			return ImageIO.read(new File("./" + imgFile));
-		} catch (IOException e) {
-			throw new Error("IOException - GameState.findImage");
-		}
+		return new ImageIcon(getClass().getResource("/" + imgFile)).getImage();
 	}
 	
 	/**

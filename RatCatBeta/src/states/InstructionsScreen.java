@@ -18,7 +18,7 @@ public class InstructionsScreen extends GameState {
 	/**
 	 * **** CHANGE THIS NUMBER TO REFLECT THE NUMBER OF INSTRUCTION SCREENS *****
 	 */
-	private int screenCount = 3;
+	private int screenCount = 5;
 	
 	public float stateID(){
 		return StateManager.instructionsID;
@@ -29,9 +29,11 @@ public class InstructionsScreen extends GameState {
 		addObject("main", "instructions/main.png", 25, 525);
 		addObject("play", "instructions/play.png", 950, 525);
 		
+		addObject("title", "instructions/title.png", 275, 15);
+		
 		addObject("left", "instructions/left.png", 50, 240);
 		addObject("right", "instructions/right.png", 1025, 240);
-		addObject("display", "instructions/screens/1.png", 200, 120);
+		addObject("display", "instructions/screens/1.png", 280, 120);
 	}
 	
 	public void entered(){

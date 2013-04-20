@@ -4,6 +4,7 @@ import gameplay.Card;
 import gameplay.ComputerPlayer;
 import gameplay.Deck;
 import gameplay.Player;
+import gui.GameApplet;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -126,8 +127,7 @@ public class GameMain extends GameState {
 		}
 		
 		if(getObject("reports").isInRange(mousePos)){
-			// reports clicked - display reports
-			Switchboard.setState(StateManager.reportsID);
+			GameApplet.window.call("loadReports", null);
 			return;
 		}
 		
