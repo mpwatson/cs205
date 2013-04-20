@@ -61,9 +61,8 @@ public class GameMain extends GameState {
 		addObject("discard", Card.backImage, 190 , 107);
 		addObject("drawn", Card.blankImage, 107, 307);
 		
-		addObject("rattat","gameMain/rattat.png", 900, 237);
-		
-		
+		addObject("yes","gameMain/yes.png", 900, 237);
+		addObject("no","gameMain/no.png", 1025, 237);
 		
 		addObject("cCard1", Card.backImage, 400 , 25);
 		addObject("cCard2", Card.backImage, 600 , 25);
@@ -82,8 +81,11 @@ public class GameMain extends GameState {
 			loaded = true;
 		}
 		
+		System.out.println(Switchboard.getLastState());
+		
 		if(Switchboard.getLastState() == StateManager.modeMenuID){
 			newGame = true;
+			System.out.println("RESET");
 		} else {
 			newGame = false;
 		}
@@ -94,6 +96,7 @@ public class GameMain extends GameState {
 		
 		if(newGame){
 			newGame = false;
+			System.out.println("NEW");
 			startGame();
 			humanTurn();
 		}
@@ -140,9 +143,15 @@ public class GameMain extends GameState {
 			return;
 		}
 		
-		if(getObject("rattat").isInRange(mousePos)){
+		if(getObject("yes").isInRange(mousePos)){
 			// rattat clicked
-			ratCatClicked();
+			clickedYes();
+			return;
+		}
+		
+		if(getObject("no").isInRange(mousePos)){
+			// rattat clicked
+			clickedNo();
 			return;
 		}
 		
@@ -247,6 +256,9 @@ public class GameMain extends GameState {
 		deck.discard(topCard);
 		changeDiscardPicture(topCard.getImage());
 		
+		getObject("yes").setVisible(false);
+		getObject("no").setVisible(false);
+		
 		changeCardPicture(1, player.getHand().getCard(0).getImage());
 		changeCardPicture(2, Card.backImage);
 		changeCardPicture(3, Card.backImage);
@@ -312,6 +324,9 @@ public class GameMain extends GameState {
 	    else {
 	    	clickedNo();
 	    }*/
+	    
+	    getObject("yes").setVisible(true);
+		getObject("no").setVisible(true);
 	}
 	
 	// Need option for power card
@@ -416,7 +431,9 @@ public class GameMain extends GameState {
 		
 		setText("You have called Rat-a-Tat-Cat!");
 		ratCalled = true;
-		computerTurn();
+		
+		timer = shortWait;
+		timerId = 10;
 	}
 	
 	public void humanDrawDiscard() {
@@ -505,17 +522,28 @@ public class GameMain extends GameState {
 		}
 		else {
 			
-			setText("Computer's turn begins now.");
+			// DO YOU CALL RAT CAT?
+			setText("Would you like to call rat cat?");
+			gameState = 69;
 			
-			// *WAIT*
-			timer = shortWait;
-			timerId = 8;
+			getObject("yes").setVisible(true);
+			getObject("no").setVisible(true);
 		}
+	}
+	
+	public void endPlayerTurn2(){
+		setText("Computer's turn begins now.");
+		
+		// *WAIT*
+		timer = shortWait;
+		timerId = 8;
 	}
 	
 	public void clickedYes() {
 		
 		// Get rid of Yes/No buttons now that they have been clicked
+		getObject("yes").setVisible(false);
+		getObject("no").setVisible(false);
 		
 		if (gameState == 5) {
 			chooseMyCardToSwap();
@@ -526,11 +554,16 @@ public class GameMain extends GameState {
 		else if (gameState == 10) {
 			chooseMyCardToSwap();
 		} // Answered yes to "use draw two first card swap"
+		else if(gameState == 69){
+			ratCatClicked();
+		}
 	}
 	
 	public void clickedNo() {
 		
 		// Get rid of Yes/No buttons now that they have been clicked
+		getObject("yes").setVisible(false);
+		getObject("no").setVisible(false);
 		
 		if (gameState == 5) {
 			//System.out.println("Okay your turn is over.");
@@ -545,6 +578,9 @@ public class GameMain extends GameState {
 		else if (gameState == 10) {
 			secondDrawTwo();
 		} // Answered no to "use draw two first card swap"
+		else if(gameState == 69){
+			endPlayerTurn2();
+		}
 	}
 	
 	public void chooseMyCardToSwap() {
@@ -641,6 +677,9 @@ public class GameMain extends GameState {
 				clickedNo();
 			}
 			*/
+			
+			getObject("yes").setVisible(true);
+			getObject("no").setVisible(true);
 		}
 		else {
 			gameState = 10;
@@ -658,6 +697,9 @@ public class GameMain extends GameState {
 				clickedNo();
 			}
 			*/
+			
+			getObject("yes").setVisible(true);
+			getObject("no").setVisible(true);
 		}
 	}
 	
@@ -711,7 +753,7 @@ public class GameMain extends GameState {
 		//System.out.println("Top of Discard Pile: " + deck.peekDiscard());
 		//System.out.println("Take from Discard Pile (1) or Draw (2) or Yell Rat-A-Tat-Cat (3)");
 		
-		setText("Player 1 Turn, Choose to draw new card, click discard pile, or yell Rat-A-Tat-Cat.");
+		setText("Player 1 Turn: Choose to draw new card or click discard pile");
 		
 		/* Method ends, now wait for a click
 		
@@ -959,6 +1001,10 @@ public class GameMain extends GameState {
 			clickIndex = 0;
 		    endPlayerTurn();
 		    return;
+		}
+		
+		if(timerId == 10){
+			endPlayerTurn2();
 		}
 	}
 	
