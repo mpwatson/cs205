@@ -26,11 +26,6 @@ public class GameApplet extends Applet {
 	 * The dimensions of the applet
 	 */
 	public static Vector2D dimensions = new Vector2D(1200, 600);
-	
-	/**
-	 * The location of the applet
-	 */
-	public static String location = "C:/";
 
 	/**
 	 * Initialize the contents of the frame.
@@ -42,8 +37,6 @@ public class GameApplet extends Applet {
 		this.setLayout(new GridLayout());
 		
 		this.addKeyListener(new KeyInputListener());
-		
-		location = this.getCodeBase().toString().substring(6);
 		
 		panel = new GraphicPanel();
 		this.add(panel);
