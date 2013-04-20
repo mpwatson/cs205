@@ -2,7 +2,7 @@ package main;
 
 import java.awt.Graphics;
 import java.awt.Point;
-
+//import netscape.javascript.JSObject;
 import misc.UpdateMode;
 
 

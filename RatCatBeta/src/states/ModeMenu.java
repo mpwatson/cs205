@@ -18,11 +18,6 @@ public class ModeMenu extends GameState {
 	}
 	
 	public void initialize() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void entered() {
 		addObject("backdrop","modeMenu/backdrop.png", 0, 0);
 		addObject("title", "modeMenu/menuTitle.png", 225, 20);
 		
@@ -30,8 +25,11 @@ public class ModeMenu extends GameState {
 		addObject("instruct","modeMenu/instruct.png", 950, 525);
 		
 		addObject("easy","modeMenu/easy.png", 200, 180);
-		addObject("med","modeMenu/med.png", 475, 180);
+		addObject("med","modeMenu/medium.png", 475, 180);
 		addObject("hard","modeMenu/hard.png", 750, 180);
+	}
+
+	public void entered() {
 		
 	}
 

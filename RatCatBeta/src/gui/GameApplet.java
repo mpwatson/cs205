@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import netscape.javascript.JSObject;
+
 import misc.Vector2D;
 
 /**
@@ -22,6 +24,8 @@ public class GameApplet extends Applet {
 	
 	private GraphicPanel panel;
 	
+	public static JSObject window;
+	
 	/**
 	 * The dimensions of the applet
 	 */
@@ -35,6 +39,8 @@ public class GameApplet extends Applet {
 		
 		this.setBackground(new Color(220, 220, 220));
 		this.setLayout(new GridLayout());
+		
+		window = JSObject.getWindow(this);
 		
 		this.addKeyListener(new KeyInputListener());
 		

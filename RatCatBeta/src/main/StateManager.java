@@ -10,7 +10,6 @@ import states.InstructionsScreen;
 import states.MainMenu;
 import states.GameMain;
 import states.ModeMenu;
-import states.ReportDisplay;
 
 
 /**
@@ -27,10 +26,6 @@ public final class StateManager {
 	 * Option menu
 	 */
 	public static final float instructionsID = 1.1f;
-	/**
-	 * Report display
-	 */
-	public static final float reportsID = 1.2f;
 	/**
 	 * Screen for selecting opponent
 	 */
@@ -52,7 +47,6 @@ public final class StateManager {
 		stateList = new ArrayList<GameState>();
 		stateList.add(new MainMenu());
 		stateList.add(new InstructionsScreen());
-		stateList.add(new ReportDisplay());
 		stateList.add(new ModeMenu());
 		stateList.add(new GameMain());
 	}
