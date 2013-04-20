@@ -136,7 +136,7 @@ public abstract class GameState {
 	 */
 	public void addObject(String iName, String imgFile, int x, int y){
 		try {
-			display.add(new DisplayObject(iName, new ImageEx(ImageIO.read(new File(GameApplet.location + imgFile)), x, y)));
+			display.add(new DisplayObject(iName, new ImageEx(ImageIO.read(new File("./" + imgFile)), x, y)));
 		} catch (IOException e) {
 			throw new Error("IOException - GameState.addObject");
 		}
@@ -162,7 +162,7 @@ public abstract class GameState {
 	 */
 	public Image findImage(String imgFile){
 		try {
-			return ImageIO.read(new File(GameApplet.location + imgFile));
+			return ImageIO.read(new File("./" + imgFile));
 		} catch (IOException e) {
 			throw new Error("IOException - GameState.findImage");
 		}
