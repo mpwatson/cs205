@@ -26,6 +26,8 @@ public class ComputerPlayer extends Player{
 	private int[] knownCards;
 	private int turnCount;
 
+	public int lastSeen;
+	
 	private int difficulty;
 
 	public ComputerPlayer(int difficulty){
@@ -106,7 +108,7 @@ public class ComputerPlayer extends Player{
 				knownCards[index] = KNOWN;
 			}
 		}else if(drawnCard.getRank() == 11){
-			peek();
+			lastSeen = peek();
 		}
 		return discardCard;
 
@@ -164,7 +166,9 @@ public class ComputerPlayer extends Player{
 	/**
 	*Choose a random Unknown card to peek at
 	*/
-	private void peek(){
+	private int peek(){
+		int learn = 5;
+		
 		//Create an arraylist of the indexes of the unkowncards
 		ArrayList<Integer> unknownIndexes = new ArrayList<Integer>();
 		for(int i = 0; i<4; i++){
@@ -174,9 +178,11 @@ public class ComputerPlayer extends Player{
 		}
 		//If there are unknown cards randomly choose one to peek at
 		if(unknownIndexes.size() > 0){
-			int learn = (int)(Math.random()*unknownIndexes.size());
+		    learn = (int)(Math.random()*unknownIndexes.size());
 			knownCards[unknownIndexes.get(learn)] = KNOWN;
 		}
+		
+		return learn;
 	}
 
 

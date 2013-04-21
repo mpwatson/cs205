@@ -46,6 +46,9 @@ public class GameMain extends GameState {
 	
     private int clickIndex;
     
+    // Used for swapping cards
+    private int[] swap;
+    
 	private final Font displayFont = new Font("Lucida Calligraphy", Font.PLAIN, 16);
 	
 	public float stateID(){
@@ -632,10 +635,9 @@ public class GameMain extends GameState {
 	}
 	
 	public void computerTurn() {
-        
-        setText("Computer's turn is happening.");
-        
+         
         changeCardPicture(9, null);
+        
         opponent.beginTurn();
         gameState = 2; // State 2 is during the opponent's turn
         
@@ -648,6 +650,22 @@ public class GameMain extends GameState {
 				picked = deck.drawCardDeck();
 			}
 		}
+		
+		String sMessage = "";
+		
+		if(picked.isPowerCard()){
+			if(picked.getRank() == 10){
+				sMessage = "The computer is using a draw 2 card.";
+			}
+			if(picked.getRank() == 11){
+				sMessage = "The computer is peeking at your card!";
+			}
+			if(picked.getRank() == 12){
+				sMessage = "The computer is swapping a card!";
+			}
+		}
+		
+		setText("Computer's turn is happening. " + sMessage);
         
         // *WAIT*
         timer = shortWait;
@@ -663,6 +681,27 @@ public class GameMain extends GameState {
 				deck.discard(discarded);
 				changeDiscardPicture(discarded.getImage());
 			}
+			
+			String[] messages = new String[]{"first", "second", "third", "fourth"};
+			
+			if(picked.getRank() == 11){
+				if(opponent.lastSeen < 4){
+					setText("The computer peeked at its " + messages[opponent.lastSeen] + " card!");
+				}else{
+					setText("The computer did not peek at its cards, it knew them all!");
+				}
+			}
+			
+			if(picked.getRank() == 12){
+				setText("The computer swapped its " + messages[swap[0]] + " card with your " + messages[swap[0]] + " card!");
+			}
+			
+			if(picked.getRank() >= 11){
+				// *WAIT*
+				timer = shortWait;
+				timerId = 11;
+				return;
+			}
 		}else{
 			//handle the playing of a power card
 			computerPowerCard(picked);
@@ -670,6 +709,20 @@ public class GameMain extends GameState {
 
 		opponent.incrementTurnCounter();
 		
+		
+		changeCardPicture(9, null);
+		
+		if (isGameOver()) {
+			handleGameOver();
+		}
+		else {
+			ratCalled = opponent.callRatATat();
+			humanTurn();
+		}
+	}
+	
+	public void cpTurnMessage(){
+		opponent.incrementTurnCounter();
 		
 		changeCardPicture(9, null);
 		
@@ -746,7 +799,7 @@ public class GameMain extends GameState {
 				break;
 			case 12:
 				//swap[0] = 5 indicates not to use the swap
-				int[] swap = opponent.playSwap();
+				swap = opponent.playSwap();
 				if(swap[0]!=5){
 					Card playerCard = player.getHand().removeCard(swap[1]);
 					Card computerCard = opponent.getHand().removeCard(swap[0]);
@@ -858,6 +911,10 @@ public class GameMain extends GameState {
 		
 		if(timerId == 10){
 			endPlayerTurn2();
+		}
+		
+		if(timerId == 11){
+			cpTurnMessage();
 		}
 	}
 	

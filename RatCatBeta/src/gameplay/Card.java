@@ -24,8 +24,14 @@ public class Card {
 		return "gameMain/cards/" + Integer.toString(rank) + ".png";
 	}
 	
+	/**
+	 * Determine if the card is a power card
+	 * @return
+	 */
 	public boolean isPowerCard(){
-		return ((rank == 10) || (rank == 11) || (rank == 12));
+		return ((rank == 10)       // DRAW 2
+				|| (rank == 11)    // PEEK
+				|| (rank == 12));  // SWAP
 	}
 	
 	public String toString(){
