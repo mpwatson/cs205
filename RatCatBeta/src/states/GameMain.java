@@ -86,7 +86,7 @@ public class GameMain extends GameState {
 		
 		if(Switchboard.getLastState() == StateManager.modeMenuID){
 			newGame = true;
-			System.out.println("RESET");
+			gameState = 1;
 		} else {
 			newGame = false;
 		}
@@ -97,7 +97,6 @@ public class GameMain extends GameState {
 		
 		if(newGame == true){
 			newGame = false;
-			System.out.println("NEW");
 			startGame();
 			return;
 		}
