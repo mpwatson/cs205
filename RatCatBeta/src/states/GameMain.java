@@ -242,6 +242,8 @@ public class GameMain extends GameState {
 		deck.buildRatCatDeck();
 		deck.shuffle();
 		
+		GameApplet.window.call("setDifficulty", new Object[] {difficulty});
+		
 		picked = null;
 		mySwap = null;
 		yourSwap = null;
@@ -250,6 +252,13 @@ public class GameMain extends GameState {
 			player.getHand().addCardByIndex(deck.drawCardDeck(), i);
 			opponent.getHand().addCardByIndex(deck.drawCardDeck(), i);
 		}
+		
+		// determine opponent's hand value
+		int aiHand = (opponent.getHand().getCard(0).getRank() >=9 ? 5 : opponent.getHand().getCard(0).getRank()) + 
+				(opponent.getHand().getCard(1).getRank() >=9 ? 5 : opponent.getHand().getCard(1).getRank()) + 
+				(opponent.getHand().getCard(2).getRank() >=9 ? 5 : opponent.getHand().getCard(2).getRank()) + 
+				(opponent.getHand().getCard(3).getRank() >=9 ? 5 : opponent.getHand().getCard(3).getRank());
+		GameApplet.window.call("addInitialHandScore", new Object[] {aiHand});
 		
 		Card topCard = deck.drawCardDeck();
 		while (topCard.isPowerCard()) {
@@ -368,6 +377,10 @@ public class GameMain extends GameState {
 		changeCardPicture(6, opponentCardTwo.getImage());
 		changeCardPicture(7, opponentCardThree.getImage());
 		changeCardPicture(8, opponentCardFour.getImage());
+		
+		GameApplet.window.call("addPlayerScore", new Object[] {playerOneScore});
+		GameApplet.window.call("addAiScore", new  Object[] {playerTwoScore});
+		GameApplet.window.call("saveGame", null);
 	}
 	
 	public Card resolvePowerCard(Card testCard) {
