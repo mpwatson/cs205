@@ -363,7 +363,7 @@ public class GameMain extends GameState {
 		
 		if(playerOneScore < playerTwoScore){
 			resultString += "YOU WON!";
-		}else if(playerOneScore < playerTwoScore){
+		}else if(playerOneScore > playerTwoScore){
 			resultString += "YOU LOST!";
 		}else{
 			resultString += "YOU DREW!";
@@ -636,7 +636,7 @@ public class GameMain extends GameState {
         setText("Computer's turn is happening.");
         
         changeCardPicture(9, null);
-        
+        opponent.beginTurn();
         gameState = 2; // State 2 is during the opponent's turn
         
 		if (!deck.discardHasCards()) {
