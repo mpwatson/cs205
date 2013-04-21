@@ -34,6 +34,8 @@ public class Deck {
 	
 	//check top card of discard
 	public Card peekDiscard(){
+		if(discard.size() == 0) return new Card(0);
+		
 		return discard.peek();
 	}
 	

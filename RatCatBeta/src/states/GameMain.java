@@ -82,11 +82,9 @@ public class GameMain extends GameState {
 			loaded = true;
 		}
 		
-		System.out.println(Switchboard.getLastState());
-		
 		if(Switchboard.getLastState() == StateManager.modeMenuID){
 			newGame = true;
-			System.out.println("RESET");
+			gameState = 1;
 		} else {
 			newGame = false;
 		}
@@ -97,7 +95,6 @@ public class GameMain extends GameState {
 		
 		if(newGame == true){
 			newGame = false;
-			System.out.println("NEW");
 			startGame();
 			return;
 		}
@@ -222,6 +219,12 @@ public class GameMain extends GameState {
 	}
 	
 	public void changeDiscardPicture(String newImage){
+		if(deck.discardHasCards()){
+			getObject("discard").setVisible(true);
+		}else{
+			getObject("discard").setVisible(false);
+		}
+		
 		getObject("discard").setImage(findImage(newImage), 0);
 	}
 	
@@ -269,8 +272,6 @@ public class GameMain extends GameState {
 		changeCardPicture(8, Card.backImage);
 		
 		setText("Peek at two of your cards");
-		
-		System.out.println("DoneStartup");
 		
 		// *WAIT*
 		timer = longWait;
