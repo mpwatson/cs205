@@ -30,10 +30,6 @@ public final class Switchboard {
 	public static int frameLength = 30;
 	
 	/**
-	 * TODO: Add in all game level variables here
-	 */
-	
-	/**
 	 * Setup the game
 	 */
 	public static void initialize(){
@@ -67,24 +63,12 @@ public final class Switchboard {
 		StateManager.drawState(gameStateID, g);
 	}
 	
+	/**
+	 * Handle the mouse being clicked, updating the current game state
+	 * @param mousePos
+	 */
 	public static void handleMouseClick(Point mousePos){
 		StateManager.updateState(gameStateID, mousePos, UpdateMode.MOUSE_CLICKED);
-	}
-	
-	public static void handleMousePress(Point mousePos){
-		StateManager.updateState(gameStateID, mousePos, UpdateMode.MOUSE_PRESSED);
-	}
-	
-	public static void handleMouseRelease(Point mousePos){
-		StateManager.updateState(gameStateID, mousePos, UpdateMode.MOUSE_RELEASED);
-	}
-	
-	public static void handleKeyPress(int keyID){
-		StateManager.updateState(gameStateID, new Point(-1, keyID), UpdateMode.KEY_PRESSED);
-	}
-	
-	public static void handleKeyRelease(int keyID){
-		StateManager.updateState(gameStateID, new Point(-1, keyID), UpdateMode.KEY_RELEASED);
 	}
 	
 	/**

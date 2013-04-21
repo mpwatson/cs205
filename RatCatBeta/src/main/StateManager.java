@@ -19,6 +19,10 @@ import states.ModeMenu;
  */
 public final class StateManager {
 	/**
+	 * A list of ID numbers for each game state
+	 */
+	
+	/**
 	 * Main menu
 	 */
 	public static final float mainMenuID = 1.0f;

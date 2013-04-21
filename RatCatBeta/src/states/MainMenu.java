@@ -24,9 +24,11 @@ public class MainMenu extends GameState {
 		 */
 		addObject("back", "mainMenu/menuBack.png", 0, 0);
 		addObject("title", "mainMenu/menuTitle.png", 275, 30);
-		addObject("play", "mainMenu/play.png", 375, 200);
-		addObject("instruct", "mainMenu/instruct.png", 375, 325);
-		addObject("report", "mainMenu/report.png", 375, 450);
+		addObject("play", "mainMenu/play.png", 100, 200);
+		addObject("instruct", "mainMenu/instruct.png", 100, 325);
+		addObject("report", "mainMenu/report.png", 100, 450);
+		
+		addObject("stuff","mainmenu/stuff.png", 400, 180);
 	}
 	
 	public void entered(){
@@ -50,26 +52,9 @@ public class MainMenu extends GameState {
 		
 		if(getObject("report").isInRange(mousePos)){
 			GameApplet.window.call("loadReports", null);
-			
 			return;
 		}
 	}
-	
-	public void handleMousePressed(Point mousePos) {
-		
-	}
-	
-	public void handleMouseReleased(Point mousePos) {
-		
-	}
-
-	public void handleKeyPressed(int keyID) {
-		
-	}
-
-	public void handleKeyReleased(int keyID) {
-		
-	};
 	
 	public void closeState() {};
 }

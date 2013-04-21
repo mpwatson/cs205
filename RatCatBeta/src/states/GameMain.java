@@ -291,45 +291,15 @@ public class GameMain extends GameState {
 	
 	public void peek() {
 		gameState = 4; // The state of a picked Peek card
-	    //System.out.println("YOU DREW PEEK. PICK WHICH CARD TO PEEK AT: ");
-	    
-	    setText("You have drawn a Peek card, click which card to peek at.");	    
-        /* Method ends, wait for click
-	    
-	    String peekInput = scanner.nextLine();
-	    int intPeekInput = Integer.parseInt(peekInput);	    
-	    if (intPeekInput == 0) {
-	    	humanCardOneClicked();
-	    }
-	    else if (intPeekInput == 1) {
-	    	humanCardTwoClicked();
-	    }
-	    else if (intPeekInput == 2) {
-	    	humanCardThreeClicked();
-	    }
-	    else if (intPeekInput == 3) {
-	    	humanCardFourClicked();
-	    }*/
+	    setText("You have drawn a Peek card, click which card to peek at.");
 	}
 	
 	public void swap() {
 		gameState = 5; // The state of a picked Swap card
-		// Need some YES OR NO buttons to pop up 
-	    //System.out.println("YOU DREW SWAP. DO YOU WANT TO SWAP? (0 - No, 1 - Yes");
 	    
 	    setText("You have drawn a Swap card, would you like to use it?");
+	    
 	    // Need some yes or no buttons to pop up
-        /* Method ends, wait for click
-	    
-	    String swapDecision = scanner.nextLine();
-	    int swapDecisionInt = Integer.parseInt(swapDecision);
-	    if (swapDecisionInt == 1) {
-            clickedYes();
-	    }
-	    else {
-	    	clickedNo();
-	    }*/
-	    
 	    getObject("yes").setVisible(true);
 		getObject("no").setVisible(true);
 	}
@@ -377,9 +347,15 @@ public class GameMain extends GameState {
 		Card opponentCardFour = resolvePowerCard(opponent.getHand().getCard(3));
 		int playerOneScore = playerCardOne.getRank() + playerCardTwo.getRank() + playerCardThree.getRank() + playerCardFour.getRank();
 		int playerTwoScore = opponentCardOne.getRank() + opponentCardTwo.getRank() + opponentCardThree.getRank() + opponentCardFour.getRank();
-		//System.out.println("Player 1: " + playerOneScore);
-		//System.out.println("Player 2: " + playerTwoScore);
-		String resultString = "Player 1: " + playerOneScore + ". Player 2: " + playerTwoScore + ".";
+		String resultString = "Player 1: " + playerOneScore + ". Player 2: " + playerTwoScore + ". ";
+		
+		if(playerOneScore < playerTwoScore){
+			resultString.concat("YOU WIN!");
+		}else if(playerOneScore < playerTwoScore){
+			resultString.concat("YOU LOST!");
+		}else{
+			resultString.concat("YOU DREW!");
+		}
 		
 		setText(resultString);
 		
@@ -466,26 +442,6 @@ public class GameMain extends GameState {
 		    //System.out.println("PICK WHERE TO PUT " + picked.getRank() + ".  (Or -1 to discard)");
 		    
 		    setText("Click where to put your card, or click discard pile to discard.");
-	        /*/ Method ends, wait for click
-		    
-		    String inputTwo = scanner.nextLine();
-		    int inputTwoInt = Integer.parseInt(inputTwo);		    
-		    if (inputTwoInt == -1) {
-		    	discardPileClicked();
-		    }
-		    else if (inputTwoInt == 0) {
-		    	humanCardOneClicked();
-		    }
-		    else if (inputTwoInt == 1) {
-		    	humanCardTwoClicked();
-		    }
-		    else if (inputTwoInt == 2) {
-		    	humanCardThreeClicked();
-		    }
-		    else if (inputTwoInt == 3) {
-		    	humanCardFourClicked();
-		    }
-		    */
 		}
 		
 	}
@@ -592,55 +548,17 @@ public class GameMain extends GameState {
 	
 	public void chooseMyCardToSwap() {
 		gameState = 6;
-        //System.out.println("CHOOSE WHICH OF YOUR CARDS TO SWAP: ");	
-        
         setText("Click one of your cards to swap.");
-        /* Method ends, wait for click
-        
-        String mySwapInput = scanner.nextLine();
-        int mySwapInt = Integer.parseInt(mySwapInput);
-	    if (mySwapInt == 0) {
-	    	humanCardOneClicked();
-	    }
-	    else if (mySwapInt == 1) {
-	    	humanCardTwoClicked();
-	    }
-	    else if (mySwapInt == 2) {
-	    	humanCardThreeClicked();
-	    }
-	    else if (mySwapInt == 3) {
-	    	humanCardFourClicked();
-	    }*/
 	}
 	
 	public void chooseYourCardToSwap() {
 		gameState = 7;
-        //System.out.println("CHOOSE WHICH OPPONENT CARD TO SWAP: ");
-        
         setText("Choose one of your opponents card to swap with.");
-        /* Method ends, wait for click
-        
-        String yourSwapInput = scanner.nextLine();
-        int yourSwapInt = Integer.parseInt(yourSwapInput);
-	    if (yourSwapInt == 0) {
-	    	computerCardOneClicked();
-	    }
-	    else if (yourSwapInt == 1) {
-	    	computerCardTwoClicked();
-	    }
-	    else if (yourSwapInt == 2) {
-	    	computerCardThreeClicked();
-	    }
-	    else if (yourSwapInt == 3) {
-	    	computerCardFourClicked();
-	    */
-        
 	}
 	
 	public void finishSwap() {
         player.getHand().addCard(yourSwap);
         opponent.getHand().addCard(mySwap);
-        //System.out.println("swap successful");
         
         setText("Okay! Swap successful!");
         // *WAIT*
@@ -649,8 +567,6 @@ public class GameMain extends GameState {
 	}
 	
 	public void firstDrawPowerCard() {
-		//System.out.println("YOU DREW A POWER CARD");
-		
 		setText("You have drawn a power card!");
 		// *WAIT*
 		timer = shortWait;
@@ -659,8 +575,6 @@ public class GameMain extends GameState {
 	
 	public void firstDrawPowerCard2(){
 		if (picked.getRank() == 10) {
-			//System.out.println("You drew another Draw Two, start again!");
-			
 			setText("You have drawn another Draw Two card, start again!");
 			// *WAIT*
 			timer = shortWait;
@@ -669,41 +583,15 @@ public class GameMain extends GameState {
 		}
 		else if (picked.getRank() == 11) {
 			gameState = 9;
-			//System.out.println("YOU DREW A PEEK (0 TO USE OR 1 TO USE YOUR SECOND DRAW)");
-			
 			setText("You drew a peek card, click yes to use, or no to try your second draw.");
-			/* Method ends, wait for click
-			// Need yes or no buttons to pop up
-			
-			String drawTwoPeekDec = scanner.nextLine();
-			int drawTwoPeekDecInt = Integer.parseInt(drawTwoPeekDec);
-			if (drawTwoPeekDecInt == 0) {
-			    clickedYes();
-			}
-			else if (drawTwoPeekDecInt == 1) {
-				clickedNo();
-			}
-			*/
 			
 			getObject("yes").setVisible(true);
 			getObject("no").setVisible(true);
 		}
 		else {
 			gameState = 10;
-			//System.out.println("YOU DREW A SWAP (0 TO USE OR 1 TO USE YOUR SECOND DRAW)");
 			
 			setText("You drew a swap card, click yes to use, or not to try your second draw.");
-			/* Method ends, wait for click
-			// Need yes or no buttons to pop up
-			
-			String drawTwoSwapDec = scanner.nextLine();
-			int drawTwoSwapDecInt = Integer.parseInt(drawTwoSwapDec);
-			if (drawTwoSwapDecInt == 0) {
-				clickedYes();
-			} else if (drawTwoSwapDecInt == 1) {
-				clickedNo();
-			}
-			*/
 			
 			getObject("yes").setVisible(true);
 			getObject("no").setVisible(true);
@@ -712,36 +600,12 @@ public class GameMain extends GameState {
 	
 	public void firstDrawNormal() {
 		gameState = 11;
-		//System.out.println("YOU DREW: " + picked.getRank());
-		//System.out.println("SELECT WHICH CARD TO REPLACE, OR -1 TO DISCARD/USE YOUR SECOND DRAW");
 		
 		changeCardPicture(9, picked.getImage());
 		setText("Select which card to replace, or discard and draw again.");
-		/* Method ends, wait for click
-		// Click discard to use your second draw
-		
-		String twoDecision = scanner.nextLine();
-		int twoDecInt = Integer.parseInt(twoDecision);
-	    if (twoDecInt == -1) {
-	    	discardPileClicked();
-	    }
-	    else if (twoDecInt == 0) {
-	    	humanCardOneClicked();
-	    }
-	    else if (twoDecInt == 1) {
-	    	humanCardTwoClicked();
-	    }
-	    else if (twoDecInt == 2) {
-	    	humanCardThreeClicked();
-	    }
-	    else if (twoDecInt == 3) {
-	    	humanCardFourClicked();
-	    }
-	    */
 	}
 	
 	public void secondDrawTwo() {
-	    //System.out.println("Starting second draw");
 		picked = deck.drawCardDeck();
 		
 		setText("Starting second draw.");
@@ -753,36 +617,13 @@ public class GameMain extends GameState {
 	public void humanTurn() {
 		
 		gameState = 1; // State 1 = Start of player's turn
-    	//System.out.println("%%%%%%%%%%%%%%%%%\n");
-    	//System.out.println("Player's Hand:\n");
     	player.printHand();
-    	//System.out.println("%%%%%%%%%%%%%%%%%\n");
-		//System.out.println("Top of Discard Pile: " + deck.peekDiscard());
-		//System.out.println("Take from Discard Pile (1) or Draw (2) or Yell Rat-A-Tat-Cat (3)");
-		
+    	
 		setText("Player 1 Turn: Choose to draw new card or click discard pile");
-		
-		/* Method ends, now wait for a click
-		
-		String input = scanner.nextLine();
-		int inputInt = Integer.parseInt(input);
-		if (inputInt == 1) {
-			humanDrawDiscard();
-		}
-		else if (inputInt == 2) {
-			humanDrawDeck();
-		}
-		else if (inputInt == 3) {
-			ratCatClicked();
-		}
-		*/
 	}
 	
 	public void computerTurn() {
-        //System.out.println("\n\n\n%%%%%%%%%%%%%%%%%\n");
-        //System.out.println("Computer's Hand:\n");
         opponent.printHand();
-        //System.out.println("%%%%%%%%%%%%%%%%%\n");
         
         setText("Computer Turn");
         
@@ -930,9 +771,6 @@ public class GameMain extends GameState {
 	        endPlayerTurn();
 		} // Handle normal picking and swapping
 		else if (gameState == 4) {
-		    //System.out.println("PEEKING AT CARD ONE");
-		    //System.out.println("RANK: " + player.getHand().getCard(index - 1).getRank());
-		    
 		    setText("Peeking at card.");
 		    changeCardPicture(index, player.getHand().getCard(0).getImage());
 		    
@@ -1016,14 +854,6 @@ public class GameMain extends GameState {
 			endPlayerTurn2();
 		}
 	}
-	
-	public void handleMousePressed(Point mousePos) {}
-	
-	public void handleMouseReleased(Point mousePos) {}
-	
-	public void handleKeyPressed(int keyID) {}
-
-	public void handleKeyReleased(int keyID) {}
 	
 	public void closeState() {}
 }
