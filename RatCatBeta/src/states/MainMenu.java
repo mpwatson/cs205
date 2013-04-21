@@ -51,7 +51,7 @@ public class MainMenu extends GameState {
 		}
 		
 		if(getObject("report").isInRange(mousePos)){
-			GameApplet.window.call("loadReports", null);
+			if(GameApplet.window != null) GameApplet.window.call("loadReports", null);
 			return;
 		}
 	}

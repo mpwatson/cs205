@@ -40,9 +40,6 @@ public class ModeMenu extends GameState {
 	}
 	
 	public void handleMouseClick(Point mousePos) {
-		System.out.println("CLICK");
-		
-		
 		if(getObject("main").isInRange(mousePos)){
 			// main clicked - return to main menu
 			Switchboard.setState(StateManager.mainMenuID);
