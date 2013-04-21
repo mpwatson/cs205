@@ -4,6 +4,7 @@ import java.applet.Applet;
 import java.awt.Color;
 import java.awt.GridLayout;
 
+import netscape.javascript.JSException;
 import netscape.javascript.JSObject;
 
 import misc.Vector2D;
@@ -44,7 +45,11 @@ public class GameApplet extends Applet {
 		this.setBackground(new Color(220, 220, 220));
 		this.setLayout(new GridLayout());
 		
-		window = JSObject.getWindow(this);
+		try{
+			window = JSObject.getWindow(this);
+		} catch(JSException e){
+			window = null;
+		}
 		
 		panel = new GraphicPanel();
 		this.add(panel);

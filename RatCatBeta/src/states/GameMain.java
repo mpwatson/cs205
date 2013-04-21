@@ -124,7 +124,7 @@ public class GameMain extends GameState {
 		}
 		
 		if(getObject("reports").isInRange(mousePos)){
-			GameApplet.window.call("loadReports", null);
+			if(GameApplet.window != null) GameApplet.window.call("loadReports", null);
 			return;
 		}
 		
@@ -242,7 +242,7 @@ public class GameMain extends GameState {
 		deck.buildRatCatDeck();
 		deck.shuffle();
 		
-		GameApplet.window.call("setDifficulty", new Object[] {difficulty});
+		if(GameApplet.window != null) GameApplet.window.call("setDifficulty", new Object[] {difficulty});
 		
 		picked = null;
 		mySwap = null;
@@ -258,7 +258,7 @@ public class GameMain extends GameState {
 				(opponent.getHand().getCard(1).getRank() >=9 ? 5 : opponent.getHand().getCard(1).getRank()) + 
 				(opponent.getHand().getCard(2).getRank() >=9 ? 5 : opponent.getHand().getCard(2).getRank()) + 
 				(opponent.getHand().getCard(3).getRank() >=9 ? 5 : opponent.getHand().getCard(3).getRank());
-		GameApplet.window.call("addInitialHandScore", new Object[] {aiHand});
+		if(GameApplet.window != null) GameApplet.window.call("addInitialHandScore", new Object[] {aiHand});
 		
 		Card topCard = deck.drawCardDeck();
 		while (topCard.isPowerCard()) {
@@ -378,9 +378,9 @@ public class GameMain extends GameState {
 		changeCardPicture(7, opponentCardThree.getImage());
 		changeCardPicture(8, opponentCardFour.getImage());
 		
-		GameApplet.window.call("addPlayerScore", new Object[] {playerOneScore});
-		GameApplet.window.call("addAiScore", new  Object[] {playerTwoScore});
-		GameApplet.window.call("saveGame", null);
+		if(GameApplet.window != null) GameApplet.window.call("addPlayerScore", new Object[] {playerOneScore});
+		if(GameApplet.window != null) GameApplet.window.call("addAiScore", new  Object[] {playerTwoScore});
+		if(GameApplet.window != null) GameApplet.window.call("saveGame", null);
 	}
 	
 	public Card resolvePowerCard(Card testCard) {
