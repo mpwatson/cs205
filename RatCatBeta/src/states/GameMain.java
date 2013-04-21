@@ -46,7 +46,7 @@ public class GameMain extends GameState {
 	
     private int clickIndex;
     
-	private final Font displayFont = new Font("Sans Serif", Font.PLAIN, 16);
+	private final Font displayFont = new Font("Lucida Calligraphy", Font.PLAIN, 16);
 	
 	public float stateID(){
 		return StateManager.gameMainID;
@@ -60,7 +60,8 @@ public class GameMain extends GameState {
 		
 		addObject("deck", "gameMain/cards/deck.png", 25 , 107);
 		addObject("discard", Card.backImage, 190 , 107);
-		addObject("drawn", Card.blankImage, 107, 307);
+		addObject("drawn", Card.backImage, 107, 307);
+		getObject("drawn").setVisible(false);
 		
 		addObject("yes","gameMain/yes.png", 900, 237);
 		addObject("no","gameMain/no.png", 1025, 237);
@@ -213,6 +214,12 @@ public class GameMain extends GameState {
 		}
 		
 		if(index == 9){
+			if(newImage == null){
+				getObject("drawn").setVisible(false);
+				return;
+			}
+			
+			getObject("drawn").setVisible(true);
 			getObject("drawn").setImage(findImage(newImage), 0);
 			return;
 		}
@@ -279,6 +286,7 @@ public class GameMain extends GameState {
 		changeCardPicture(6, Card.backImage);
 		changeCardPicture(7, Card.backImage);
 		changeCardPicture(8, Card.backImage);
+		changeCardPicture(9, null);
 		
 		setText("Peek at two of your cards");
 		
@@ -292,10 +300,6 @@ public class GameMain extends GameState {
 		changeCardPicture(4, Card.backImage);
 		
 		humanTurn();
-		
-	    //System.out.println("Here are the cards in the First and Last position of your hand");
-	    //System.out.println("FIRST: " + player.getHand().getCard(0).getRank());
-	    //System.out.println("LAST: " + player.getHand().getCard(3).getRank());
 	}
 	
 	public void peek() {
@@ -324,7 +328,6 @@ public class GameMain extends GameState {
 	}
 	
 	public void drawTwo2(){
-		//System.out.println("YOU DREW DRAW TWO. DRAW YOUR FIRST CARD.");
 		picked = deck.drawCardDeck();
 		
 		changeCardPicture(9, picked.getImage());
@@ -359,11 +362,11 @@ public class GameMain extends GameState {
 		String resultString = "Player 1: " + playerOneScore + ". Player 2: " + playerTwoScore + ". ";
 		
 		if(playerOneScore < playerTwoScore){
-			resultString.concat("YOU WIN!");
+			resultString += "YOU WON!";
 		}else if(playerOneScore < playerTwoScore){
-			resultString.concat("YOU LOST!");
+			resultString += "YOU LOST!";
 		}else{
-			resultString.concat("YOU DREW!");
+			resultString += "YOU DREW!";
 		}
 		
 		setText(resultString);
@@ -399,8 +402,6 @@ public class GameMain extends GameState {
 	}
 	
 	public void handlePowerCard() {
-		//System.out.println("YOU PICKED POWER CARD!");
-		
 		setText("You drew a power card!");
 		// *WAIT*
 		timer = shortWait;
@@ -421,8 +422,6 @@ public class GameMain extends GameState {
 	}
 	
 	public void ratCatClicked() {
-		//System.out.println("YOU CALLED RAT-A-TAT-CAT");
-		
 		setText("You have called Rat-a-Tat-Cat!");
 		ratCalled = true;
 		
@@ -452,8 +451,6 @@ public class GameMain extends GameState {
           handlePowerCard();
 		} else {
 			gameState = 3; // Game State representing when a card is held and waiting to be placed
-		    //System.out.println("PICK WHERE TO PUT " + picked.getRank() + ".  (Or -1 to discard)");
-		    
 		    setText("Click where to put your card, or click discard pile to discard.");
 		}
 		
@@ -491,7 +488,7 @@ public class GameMain extends GameState {
 	
 	public void endPlayerTurn() {
 		
-		changeCardPicture(9, Card.blankImage);
+		changeCardPicture(9, null);
 		
 		if (isGameOver()) {
 			handleGameOver();
@@ -509,6 +506,8 @@ public class GameMain extends GameState {
 	
 	public void endPlayerTurn2(){
 		setText("Computer's turn begins now.");
+		
+		changeCardPicture(9, Card.backImage);
 		
 		// *WAIT*
 		timer = shortWait;
@@ -542,8 +541,6 @@ public class GameMain extends GameState {
 		getObject("no").setVisible(false);
 		
 		if (gameState == 5) {
-			//System.out.println("Okay your turn is over.");
-			
             setText("Okay, your turn is over.");
 			
 			endPlayerTurn();
@@ -630,15 +627,15 @@ public class GameMain extends GameState {
 	public void humanTurn() {
 		
 		gameState = 1; // State 1 = Start of player's turn
-    	player.printHand();
     	
 		setText("Player 1 Turn: Choose to draw new card or click discard pile");
 	}
 	
 	public void computerTurn() {
-        opponent.printHand();
         
-        setText("Computer Turn");
+        setText("Computer's turn is happening.");
+        
+        changeCardPicture(9, null);
         
         gameState = 2; // State 2 is during the opponent's turn
         
@@ -672,16 +669,13 @@ public class GameMain extends GameState {
 		opponent.incrementTurnCounter();
 		
 		
-		changeCardPicture(9, Card.blankImage);
+		changeCardPicture(9, null);
 		
 		if (isGameOver()) {
-			//System.out.println("game over");
 			handleGameOver();
 		}
 		else {
 			ratCalled = opponent.callRatATat();
-			
-			//System.out.println("human turn");
 			humanTurn();
 		}
 	}

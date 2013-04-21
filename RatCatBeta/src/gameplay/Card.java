@@ -9,8 +9,6 @@ public class Card {
 	// The card back image
 	public static String backImage = "gameMain/cards/back.png";
 	
-	public static String blankImage = "gameMain/cards/blank.png";
-	
 	private int rank;
 	
 	Card(int iRank){
