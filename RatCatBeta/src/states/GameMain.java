@@ -659,8 +659,10 @@ public class GameMain extends GameState {
 			//if it is numeric play as usual
 			Card discarded = opponent.playCard(picked);
 			
-			deck.discard(discarded);
-			changeDiscardPicture(discarded.getImage());
+			if(!discarded.isPowerCard()){
+				deck.discard(discarded);
+				changeDiscardPicture(discarded.getImage());
+			}
 		}else{
 			//handle the playing of a power card
 			computerPowerCard(picked);
@@ -685,9 +687,6 @@ public class GameMain extends GameState {
 	public void computerPowerCard(Card card){
 		switch(card.getRank()){
 			case 10:
-				//discard the draw 2
-				//deck.discard(card);
-				//changeDiscardPicture(card.getImage());
 				//pick another card
 				Card newPick = deck.drawCardDeck();
 				Card discard;
@@ -699,8 +698,6 @@ public class GameMain extends GameState {
 						computerPowerCard(newPick);
 						return;
 					}
-					//deck.discard(newPick);
-					//changeDiscardPicture(newPick.getImage());
 					//draw another
 					Card newerPick = deck.drawCardDeck();
 					//could be another power card
@@ -718,8 +715,10 @@ public class GameMain extends GameState {
 					//if discard is null then the AI did not want it
 					if(discard == null){
 						//discard the new pick to keep the discard pile in order
-						deck.discard(newPick);
-						changeDiscardPicture(newPick.getImage());
+						if(!newPick.isPowerCard()){
+							deck.discard(newPick);
+							changeDiscardPicture(newPick.getImage());
+						}
 						//draw another
 						Card newerPick = deck.drawCardDeck();
 						if(!newerPick.isPowerCard()){
@@ -732,8 +731,10 @@ public class GameMain extends GameState {
 					}	
 				}
 				//discard the last card
-				deck.discard(discard);
-				changeDiscardPicture(discard.getImage());
+				if(!discard.isPowerCard()){
+					deck.discard(discard);
+					changeDiscardPicture(discard.getImage());
+				}
 				break;
 			case 11:
 				Card discarded = opponent.playCard(card);
@@ -752,8 +753,6 @@ public class GameMain extends GameState {
 					player.getHand().addCardByIndex(computerCard, swap[1]);
 					opponent.getHand().addCardByIndex(playerCard, swap[0]);  
 				}
-				//deck.discard(card);
-				//changeDiscardPicture(card.getImage());
 				break;
 		}
 	}
