@@ -74,23 +74,6 @@ public class ModeMenu extends GameState {
 		}
 	}
 	
-	public void handleMousePressed(Point mousePos) {
-		
-	}
-	
-	public void handleMouseReleased(Point mousePos) {
-		
-	}
-
-	
-	public void handleKeyPressed(int keyID) {
-		
-	}
-
-	public void handleKeyReleased(int keyID) {
-		
-	};
-	
 	public void closeState() {}
 
 }

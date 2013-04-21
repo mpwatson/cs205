@@ -16,7 +16,6 @@ import misc.Vector2D;
 
 import objects.DisplayObject;
 import objects.ImageEx;
-import objects.MusicBox;
 import objects.TextBox;
 
 
@@ -24,12 +23,21 @@ import objects.TextBox;
  * Generic game state structure
  */
 public abstract class GameState {
+	/**
+	 * List of objects currently present in the game state
+	 */
 	protected ArrayList<DisplayObject> display;
 	
-	protected MusicBox audio = new MusicBox(true);
-	
+	/**
+	 * Camera object allows the movement of every object on the screen, creating the effect of
+	 * a moving camera.
+	 */
 	public Vector2D camera = new Vector2D(0, 0);
 	
+	/**
+	 * Returns the ID number associated with the state
+	 * @return
+	 */
 	public abstract float stateID();
 	
 	public GameState(){
@@ -37,8 +45,14 @@ public abstract class GameState {
 		initialize();
 	}
 	
+	/**
+	 * Called when the applet is initialized
+	 */
 	public abstract void initialize();
 	
+	/**
+	 * Called upon entering the state
+	 */
 	public abstract void entered();
 	
 	/**
@@ -59,44 +73,34 @@ public abstract class GameState {
 			handleMouseClick(mousePos);
 			return;
 		}
-		if(mode.equals(UpdateMode.MOUSE_PRESSED)){
-			handleMousePressed(mousePos);
-			return;
-		}
-		if(mode.equals(UpdateMode.MOUSE_RELEASED)){
-			handleMouseReleased(mousePos);
-			return;
-		}
-		if(mode.equals(UpdateMode.KEY_PRESSED)){
-			handleKeyPressed(mousePos.y);
-			return;
-		}
-		if(mode.equals(UpdateMode.KEY_RELEASED)){
-			handleKeyReleased(mousePos.y);
-			return;
-		}
 		if(mode.equals(UpdateMode.EXIT)){
 			handleExit();
 			return;
 		}
 	}
 	
+	/**
+	 * Called on each frame to update game logic
+	 * @param mousePos
+	 */
 	public abstract void handleFrame(Point mousePos);
+	
+	/**
+	 * Called on each mouse click to handle game logic
+	 * @param mousePos
+	 */
 	public abstract void handleMouseClick(Point mousePos);
-	public abstract void handleMousePressed(Point mousePos);
-	public abstract void handleMouseReleased(Point mousePos);
-	public abstract void handleKeyPressed(int keyID);
-	public abstract void handleKeyReleased(int keyID);
 	
 	/**
 	 * Handle leaving the current game state
 	 */
 	public void handleExit(){
-		audio.turnOff();
-		
 		closeState();
 	}
 	
+	/**
+	 * Called upon the state being left
+	 */
 	public abstract void closeState();
 	
 	/**

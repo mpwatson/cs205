@@ -23,10 +23,16 @@ public class GraphicPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * The background color of the panel
+	 */
 	private static final Color backColor = new Color(0, 0, 200);
 	
 	private GraphicPanel panel = this;
 	
+	/**
+	 * A timer that allows the game to update constantly
+	 */
 	private Timer timer;
 	
 	public GraphicPanel(){
@@ -37,6 +43,9 @@ public class GraphicPanel extends JPanel {
 		initialize();
 	}
 	
+	/**
+	 * Initialize the panel
+	 */
 	private void initialize(){
 		timer = new Timer(Switchboard.frameLength, new TimerListener());
 		
@@ -76,20 +85,8 @@ public class GraphicPanel extends JPanel {
 		
 		public void mouseExited(MouseEvent e) {}
 		
-		public void mousePressed(MouseEvent e) {
-			Switchboard.handleMousePress(e.getPoint());
-		}
+		public void mousePressed(MouseEvent e) {}
 		
-		public void mouseReleased(MouseEvent e) {
-			Switchboard.handleMouseRelease(e.getPoint());
-		}
-	}
-	
-	public void keyPressed(int keyID){
-		Switchboard.handleKeyPress(keyID);
-	}
-	
-	public void keyReleased(int keyID){
-		Switchboard.handleKeyRelease(keyID);
+		public void mouseReleased(MouseEvent e) {}
 	}
 }

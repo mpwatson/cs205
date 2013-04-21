@@ -3,8 +3,6 @@ package gui;
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import netscape.javascript.JSObject;
 
@@ -22,8 +20,14 @@ public class GameApplet extends Applet {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * A panel spanning the applet on which the game is drawn
+	 */
 	private GraphicPanel panel;
 	
+	/**
+	 * The window in which the applet is running
+	 */
 	public static JSObject window;
 	
 	/**
@@ -32,7 +36,7 @@ public class GameApplet extends Applet {
 	public static Vector2D dimensions = new Vector2D(1200, 600);
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialize the applet.
 	 */
 	public void init() {
 		this.setSize((int)dimensions.x, (int)dimensions.y);
@@ -40,24 +44,9 @@ public class GameApplet extends Applet {
 		this.setBackground(new Color(220, 220, 220));
 		this.setLayout(new GridLayout());
 		
-		//window = JSObject.getWindow(this);
-		
-		this.addKeyListener(new KeyInputListener());
+		window = JSObject.getWindow(this);
 		
 		panel = new GraphicPanel();
 		this.add(panel);
-	}
-	
-	class KeyInputListener implements KeyListener {
-		
-		public void keyPressed(KeyEvent e) {
-			panel.keyPressed(e.getKeyCode());
-		}
-		 
-		public void keyReleased(KeyEvent e) {
-			panel.keyReleased(e.getKeyCode());
-		}
-		
-		public void keyTyped(KeyEvent e) {}
 	}
 }
