@@ -40,7 +40,7 @@ public class GameApplet extends Applet {
 		this.setBackground(new Color(220, 220, 220));
 		this.setLayout(new GridLayout());
 		
-		window = JSObject.getWindow(this);
+		//window = JSObject.getWindow(this);
 		
 		this.addKeyListener(new KeyInputListener());
 		
