@@ -95,11 +95,11 @@ public class GameMain extends GameState {
 	public void handleFrame(Point mousePos) {
 		if(gameState == 99) return;
 		
-		if(newGame){
+		if(newGame == true){
 			newGame = false;
 			System.out.println("NEW");
 			startGame();
-			humanTurn();
+			return;
 		}
 		
 		if(timer > 0){
@@ -270,6 +270,8 @@ public class GameMain extends GameState {
 		
 		setText("Peek at two of your cards");
 		
+		System.out.println("DoneStartup");
+		
 		// *WAIT*
 		timer = longWait;
 		timerId = 1;
@@ -278,6 +280,8 @@ public class GameMain extends GameState {
 	public void startGame2(){
 		changeCardPicture(1, Card.backImage);
 		changeCardPicture(4, Card.backImage);
+		
+		humanTurn();
 		
 	    //System.out.println("Here are the cards in the First and Last position of your hand");
 	    //System.out.println("FIRST: " + player.getHand().getCard(0).getRank());
@@ -378,15 +382,15 @@ public class GameMain extends GameState {
 		
 		setText(resultString);
 		
-		changeCardPicture(1, player.getHand().getCard(0).getImage());
-		changeCardPicture(2, player.getHand().getCard(1).getImage());
-		changeCardPicture(3, player.getHand().getCard(2).getImage());
-		changeCardPicture(4, player.getHand().getCard(3).getImage());
+		changeCardPicture(1, playerCardOne.getImage());
+		changeCardPicture(2, playerCardTwo.getImage());
+		changeCardPicture(3, playerCardThree.getImage());
+		changeCardPicture(4, playerCardFour.getImage());
 		
-		changeCardPicture(5, opponent.getHand().getCard(0).getImage());
-		changeCardPicture(6, opponent.getHand().getCard(1).getImage());
-		changeCardPicture(7, opponent.getHand().getCard(2).getImage());
-		changeCardPicture(8, opponent.getHand().getCard(3).getImage());
+		changeCardPicture(5, opponentCardOne.getImage());
+		changeCardPicture(6, opponentCardTwo.getImage());
+		changeCardPicture(7, opponentCardThree.getImage());
+		changeCardPicture(8, opponentCardFour.getImage());
 	}
 	
 	public Card resolvePowerCard(Card testCard) {
@@ -498,16 +502,18 @@ public class GameMain extends GameState {
 		}
 		
 		if (gameState == 3) {
-		    deck.discard(picked);
-		    
-		    changeDiscardPicture(picked.getImage());
+		    if(!picked.isPowerCard()){
+		    	deck.discard(picked);
+		    	changeDiscardPicture(picked.getImage());
+		    }
 		    
 		    endPlayerTurn();
 		} // Handle discarding of normal card
 		else if (gameState == 11) {
-			deck.discard(picked);
-		    
-		    changeDiscardPicture(picked.getImage());
+			if(!picked.isPowerCard()){
+				deck.discard(picked);
+				changeDiscardPicture(picked.getImage());
+			}
 		    
 			secondDrawTwo();
 		} // Throw away first "draw two" card and draw another
@@ -844,8 +850,8 @@ public class GameMain extends GameState {
 						computerPowerCard(newPick);
 						return;
 					}
-					deck.discard(newPick);
-					changeDiscardPicture(newPick.getImage());
+					//deck.discard(newPick);
+					//changeDiscardPicture(newPick.getImage());
 					//draw another
 					Card newerPick = deck.drawCardDeck();
 					//could be another power card
@@ -883,8 +889,10 @@ public class GameMain extends GameState {
 			case 11:
 				Card discarded = opponent.playCard(card);
 				
-				deck.discard(discarded);
-				changeDiscardPicture(discarded.getImage());
+				if(!discarded.isPowerCard()){
+					deck.discard(discarded);
+					changeDiscardPicture(discarded.getImage());
+				}
 				break;
 			case 12:
 				//swap[0] = 5 indicates not to use the swap
@@ -939,10 +947,10 @@ public class GameMain extends GameState {
 		} // First card picked for swap
 		else if (gameState == 11) {
 			Card left = player.getHand().swapCard(index - 1, picked);
-	        if (!(left.isPowerCard()))
-	          deck.discard(left);
-	        
-	        changeDiscardPicture(left.getImage());
+	        if(!left.isPowerCard()){
+	           deck.discard(left);
+	           changeDiscardPicture(left.getImage());
+	        }
 	        
 	        endPlayerTurn();	
 		} // Using first draw two card like normal
