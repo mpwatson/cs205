@@ -1,0 +1,35 @@
+
+body{
+	background-color: #eee;
+	font-family: Arial;
+}
+.main-container{
+	width: 96%;
+	padding: 2%;
+	background-color: #eee;
+};
+
+.applet-containter{
+	width: 100%;
+}
+
+.chart-container{
+	width: 48%;
+}
+
+#left{
+	float: left;
+	border-right: 1px solid #bbb;
+	background-color: #eee;
+}
+
+#right{
+	float:right;
+	background-color: #eee;
+}
+
+.divchart{
+	width: 90%;
+	height: 600px;
+}
+

@@ -1,0 +1,77 @@
+
+<html>
+<head>
+	<title>Final Project</title>
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta http-equiv="expires" content="-1" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<link href="css/main.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script text="text/javascript">
+		//Functions that are accessed by the applet to save items into the db
+		function loadReports(){
+			window.open("StatisticsPage.php", "_blank");
+		}
+
+		var difficulty = 0;
+		var player_score = 0;
+		var ai_score = 0;
+		var rounds = 1;
+		var initial_hand_score = 0;
+
+		//setters for data I want to save
+		function setDifficulty(ai_difficulty){
+			difficulty += ai_difficulty;
+		}
+
+		function incrementRound(){
+			round ++;
+		}
+
+		function addPlayerScore(player_round_score){
+			player_score += player_round_score;
+		}
+
+		function addAiScore(ai_round_score){
+			ai_score += ai_round_score;
+		}
+
+		function addInitialHandScore(ai_initial_hand_value){
+			initial_hand_score += ai_initial_hand_value;
+		}
+
+
+		//AJAX call to and endpoint to save the items into the database
+		function saveGame(){
+			$.ajax({
+				url: "saveGameStats.php",
+				type: "POST",
+				data: {difficulty: difficulty, player_score: player_score, ai_score: ai_score, rounds: rounds, initial_hand_score: initial_hand_score},
+				success: function(data, response, jqXHR){
+					//reset the objects for the next round
+					diffculty = 0;
+					player_score = 0;
+					ai_score = 0;
+					rounds = 1;
+					initial_hand_score = 0;
+				},
+				error: function(msg){
+				}
+			});
+		}
+	</script>
+	
+</head>
+<body>
+<div class = "main-container">
+	<div class="applet-container">
+		<applet code="gui/GameApplet.class" archive = "FinalProject2.jar" alt="Rat-a-Tat Cat Game" width="1200px" height="600px">
+		</applet>	
+	</div>
+	<div class="bottom-content">
+		<h2>Authors:</h2>
+			<p><b>Team Lead:</b> Michael Watson, <b>Team Members:</b> Adam Savard, Samantha Kern, Scott MacEwan</p>
+	</div>
+</div>
+</body>
+</html>
