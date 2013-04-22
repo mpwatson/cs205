@@ -25,36 +25,55 @@ public class GameMain extends GameState {
 	
 	private static boolean loaded = false;
 	
+	// the lengths for timers
 	private int longWait = 3000;
 	private int shortWait = 2000;
 	
+	// the timer
 	private float timer = 0;
 	private float timerId = 0;
 	
+	// the players and the deck
     private Player player;
     private ComputerPlayer opponent;
     private Deck deck;
     
+    // currently drawn or selected cards
     private Card picked;
 	private Card mySwap;
 	private Card yourSwap;
     
+	// made true when someone calls ratcat
 	private boolean ratCalled;
+	// indicates where in the game flow we are
     private int gameState;
     
+    // indicates whether a new game should be started, set when state is entered
     private boolean newGame;
 	
+    // the running player score
+    private int playerTotal;
+    // the running computer score
+    private int computerTotal;
+    // Whether the entire game has ended
+    private boolean gameOver;
+    
+    // remembers which card was last selected, used for power cards
     private int clickIndex;
     
     // Used for swapping cards
     private int[] swap;
     
+    // the font of the text box
 	private final Font displayFont = new Font("Lucida Calligraphy", Font.PLAIN, 16);
 	
 	public float stateID(){
 		return StateManager.gameMainID;
 	}
 	
+	/**
+	 * Called when the applet is loaded
+	 */
 	public void initialize(){
 		addObject("backdrop","gameMain/backdrop.png", 0, 0);
 		addObject("exit","gameMain/exit.png", 25, 525);
@@ -80,6 +99,9 @@ public class GameMain extends GameState {
 		addObject("hCard4", Card.backImage, 1000 , 325);
 	}
 	
+	/**
+	 * Called when the state is entered
+	 */
 	public void entered(){
 		if(!loaded){
 			addObject("display", "Welcome.", displayFont, 400, 240, Color.black);
@@ -89,11 +111,17 @@ public class GameMain extends GameState {
 		if(Switchboard.getLastState() == StateManager.modeMenuID){
 			newGame = true;
 			gameState = 1;
+			gameOver = false;
+			playerTotal = 0;
+			computerTotal = 0;
 		} else {
 			newGame = false;
 		}
 	}
 	
+	/**
+	 * Called constantly
+	 */
 	public void handleFrame(Point mousePos) {
 		if(gameState == 99) return;
 		
@@ -112,6 +140,9 @@ public class GameMain extends GameState {
 		}
 	}
 	
+	/**
+	 * Called when mouse is clicked
+	 */
 	public void handleMouseClick(Point mousePos) {
 		if(timer > 0) return;
 		
@@ -205,6 +236,11 @@ public class GameMain extends GameState {
 		}
 	}
 	
+	/**
+	 *  Changes the picture of a specified card
+	 * @param index
+	 * @param newImage
+	 */
 	public void changeCardPicture(int index, String newImage){
 		if(index >= 1 && index <= 4){
 			getObject("hCard" + index).setImage(findImage(newImage), 0);
@@ -228,6 +264,9 @@ public class GameMain extends GameState {
 		}
 	}
 	
+	/**
+	 * changes the picture of the discard pile
+	 */
 	public void changeDiscardPicture(String newImage){
 		if(deck.discardHasCards()){
 			getObject("discard").setVisible(true);
@@ -238,10 +277,17 @@ public class GameMain extends GameState {
 		getObject("discard").setImage(findImage(newImage), 0);
 	}
 	
+	/**
+	 * Set the text of the text box
+	 * @param newText
+	 */
 	public void setText(String newText){
 		getObject("display").setText(newText, 0);
 	}
 	
+	/**
+	 * Initialize a round
+	 */
 	public void startGame(){
 		
 	    player = new Player();
@@ -298,6 +344,9 @@ public class GameMain extends GameState {
 		timerId = 1;
 	}
 	
+	/**
+	 * Continue initialzing a round
+	 */
 	public void startGame2(){
 		changeCardPicture(1, Card.backImage);
 		changeCardPicture(4, Card.backImage);
@@ -305,11 +354,17 @@ public class GameMain extends GameState {
 		humanTurn();
 	}
 	
+	/**
+	 * Peek at a card
+	 */
 	public void peek() {
 		gameState = 4; // The state of a picked Peek card
 	    setText("You have drawn a Peek card, click which card to peek at.");
 	}
 	
+	/**
+	 * Swap a card
+	 */
 	public void swap() {
 		gameState = 5; // The state of a picked Swap card
 	    
@@ -320,7 +375,9 @@ public class GameMain extends GameState {
 		getObject("no").setVisible(true);
 	}
 	
-	// Need option for power card
+	/**
+	 *  Use a draw 2 card
+	 */
 	public void drawTwo() {
 		gameState = 8;
 		
@@ -343,6 +400,10 @@ public class GameMain extends GameState {
 		}
 	}
 	
+	/**
+	 * Determine whether the round has ended
+	 * @return
+	 */
 	public boolean isGameOver() {
 		if (deck.deckHasCards())
 		  return (ratCalled);
@@ -350,6 +411,9 @@ public class GameMain extends GameState {
 			return true;
 	}
 	
+	/**
+	 * Handle the end of a round of gameplay
+	 */
 	public void handleGameOver() {
 		gameState = 99;
 		Card playerCardOne = resolvePowerCard(player.getHand().getCard(0));
@@ -362,14 +426,56 @@ public class GameMain extends GameState {
 		Card opponentCardFour = resolvePowerCard(opponent.getHand().getCard(3));
 		int playerOneScore = playerCardOne.getRank() + playerCardTwo.getRank() + playerCardThree.getRank() + playerCardFour.getRank();
 		int playerTwoScore = opponentCardOne.getRank() + opponentCardTwo.getRank() + opponentCardThree.getRank() + opponentCardFour.getRank();
-		String resultString = "Player 1: " + playerOneScore + ". Player 2: " + playerTwoScore + ". ";
+		
+		playerTotal += playerOneScore;
+		computerTotal += playerTwoScore;
+		String resultString = "You: " + playerTotal + ". Opponent: " + computerTotal + ". ";
 		
 		if(playerOneScore < playerTwoScore){
-			resultString += "YOU WON!";
+			resultString += "You won the round. ";
 		}else if(playerOneScore > playerTwoScore){
-			resultString += "YOU LOST!";
+			resultString += "You lost the round. ";
 		}else{
-			resultString += "YOU DREW!";
+			resultString += "This round is a draw. ";
+		}
+		
+		if(playerTotal >= 60 && computerTotal < 60){
+			resultString += "You lost the game!";
+			gameOver = true;
+		}
+		if(playerTotal < 60 && computerTotal >= 60){
+			resultString += "You won the game!";
+			gameOver = true;
+		}
+		if(playerTotal >= 60 && computerTotal >= 60){
+			if(playerTotal > computerTotal){
+				resultString += "You lost the game!";
+				gameOver = true;
+			}
+			if(playerTotal < computerTotal){
+				resultString += "You won the game!";
+				gameOver = true;
+			}
+			if(playerTotal == computerTotal){
+				resultString += "The game is a draw!";
+				gameOver = true;
+			}
+		}
+		
+		if(!gameOver){
+			resultString += "/Would you like to continue playing?";
+			
+			gameState = 98;
+			
+			getObject("yes").setVisible(true);
+			getObject("no").setVisible(true);
+		} else {
+			resultString += "/Would you like to play another game?";
+			
+			gameState = 97;
+			
+			getObject("yes").setVisible(true);
+			getObject("no").setVisible(true);
 		}
 		
 		setText(resultString);
@@ -389,6 +495,11 @@ public class GameMain extends GameState {
 		if(GameApplet.window != null) GameApplet.window.call("saveGame", null);
 	}
 	
+	/**
+	 * Handle the drawing of a power card
+	 * @param testCard
+	 * @return
+	 */
 	public Card resolvePowerCard(Card testCard) {
 		Card returnCard = testCard;
 		if (!(returnCard.isPowerCard()))
@@ -404,6 +515,9 @@ public class GameMain extends GameState {
 			}
 	}
 	
+	/**
+	 * Let player know they drew a power card
+	 */
 	public void handlePowerCard() {
 		setText("You drew a power card!");
 		// *WAIT*
@@ -424,6 +538,9 @@ public class GameMain extends GameState {
 		return;
 	}
 	
+	/**
+	 * Called when player has called rat-a-tat-cat
+	 */
 	public void ratCatClicked() {
 		setText("You have called Rat-a-Tat-Cat!");
 		ratCalled = true;
@@ -432,6 +549,9 @@ public class GameMain extends GameState {
 		timerId = 10;
 	}
 	
+	/**
+	 * Human drawing from discard pile
+	 */
 	public void humanDrawDiscard() {
 		picked = deck.drawCardDiscard();
 		
@@ -441,6 +561,9 @@ public class GameMain extends GameState {
 		cardHasBeenPicked();
 	}
 	
+	/**
+	 * Human drawing from deck
+	 */
 	public void humanDrawDeck() {
 		picked = deck.drawCardDeck();
 		
@@ -449,6 +572,9 @@ public class GameMain extends GameState {
 		cardHasBeenPicked();
 	}
 	
+	/**
+	 * Called when a card is drawn
+	 */
 	public void cardHasBeenPicked() {
 		if (picked.isPowerCard()) {
           handlePowerCard();
@@ -459,12 +585,18 @@ public class GameMain extends GameState {
 		
 	}
 	
+	/**
+	 * Called when the deck is clicked
+	 */
 	public void deckClicked(){
 		if(gameState == 1){
 			humanDrawDeck();
 		}
 	}
 	
+	/**
+	 * Called when the discard pile is clicked
+	 */
 	public void discardPileClicked() {
 		if(gameState == 1){
 			humanDrawDiscard();
@@ -489,6 +621,9 @@ public class GameMain extends GameState {
 		} // Throw away first "draw two" card and draw another
 	}
 	
+	/**
+	 * Handle end of player's turn
+	 */
 	public void endPlayerTurn() {
 		
 		changeCardPicture(9, null);
@@ -507,6 +642,9 @@ public class GameMain extends GameState {
 		}
 	}
 	
+	/**
+	 * Let player know computer's turn is about to begin
+	 */
 	public void endPlayerTurn2(){
 		setText("Computer's turn begins now.");
 		
@@ -517,6 +655,9 @@ public class GameMain extends GameState {
 		timerId = 8;
 	}
 	
+	/**
+	 * Called when yes button is clicked
+	 */
 	public void clickedYes() {
 		
 		// Get rid of Yes/No buttons now that they have been clicked
@@ -534,9 +675,25 @@ public class GameMain extends GameState {
 		} // Answered yes to "use draw two first card swap"
 		else if(gameState == 69){
 			ratCatClicked();
-		}
+		}// Rat cat was called by player
+		else if(gameState == 98){
+			timer = 0;
+			timerId = 0;
+			startGame();
+		}// Player wants to play another round
+		else if(gameState == 97){
+			gameOver = false;
+			playerTotal = 0;
+			computerTotal = 0;
+			timer = 0;
+			timerId = 0;
+			startGame();
+		}// Player wants to play another game
 	}
 	
+	/**
+	 * Called when no button is clicked
+	 */
 	public void clickedNo() {
 		
 		// Get rid of Yes/No buttons now that they have been clicked
@@ -556,7 +713,10 @@ public class GameMain extends GameState {
 		} // Answered no to "use draw two first card swap"
 		else if(gameState == 69){
 			endPlayerTurn2();
-		}
+		}// player does not call ratcat
+		else if(gameState == 98 || gameState == 97){
+			Switchboard.setState(StateManager.mainMenuID);
+		}// player wants to end the game
 	}
 	
 	public void chooseMyCardToSwap() {
@@ -569,6 +729,9 @@ public class GameMain extends GameState {
         setText("Choose one of your opponents card to swap with.");
 	}
 	
+	/**
+	 * Finish handling a swap power card
+	 */
 	public void finishSwap() {
         player.getHand().addCard(yourSwap);
         opponent.getHand().addCard(mySwap);
@@ -579,6 +742,9 @@ public class GameMain extends GameState {
         timerId = 4;
 	}
 	
+	/**
+	 * Called when the player draws a power card
+	 */
 	public void firstDrawPowerCard() {
 		setText("You have drawn a power card!");
 		// *WAIT*
@@ -618,6 +784,9 @@ public class GameMain extends GameState {
 		setText("Select which card to replace, or discard and draw again.");
 	}
 	
+	/**
+	 * Handle the second card of a draw two power card
+	 */
 	public void secondDrawTwo() {
 		picked = deck.drawCardDeck();
 		
@@ -627,13 +796,19 @@ public class GameMain extends GameState {
 		cardHasBeenPicked();        
 	}
 	
+	/**
+	 * Begin the human's turn
+	 */
 	public void humanTurn() {
 		
 		gameState = 1; // State 1 = Start of player's turn
     	
-		setText("Player 1 Turn: Choose to draw new card or click discard pile");
+		setText("Your Turn: Choose to draw new card or click discard pile");
 	}
 	
+	/**
+	 * Handle the computer's turn
+	 */
 	public void computerTurn() {
          
         changeCardPicture(9, null);
@@ -672,6 +847,9 @@ public class GameMain extends GameState {
         timerId = 7;
 	} // Needs some form of AI, even basic for testing purposes
 	
+	/**
+	 * Continue opponent's turn after a wait
+	 */
 	public void computerTurn2(){
 		if(!picked.isPowerCard()){
 			//if it is numeric play as usual
@@ -721,6 +899,9 @@ public class GameMain extends GameState {
 		}
 	}
 	
+	/**
+	 * Handle end of opponent's turn
+	 */
 	public void cpTurnMessage(){
 		opponent.incrementTurnCounter();
 		
@@ -735,8 +916,10 @@ public class GameMain extends GameState {
 		}
 	}
 	
-	// Make separate power card methods for AI
-	
+	/**
+	 * Handle the computer drawing a power card
+	 * @param card
+	 */
 	public void computerPowerCard(Card card){
 		switch(card.getRank()){
 			case 10:
@@ -810,6 +993,10 @@ public class GameMain extends GameState {
 		}
 	}
 	
+	/**
+	 * Called when a card is clicked
+	 * @param index
+	 */
 	public void cardClicked(int index){
 		if(index <= 4){
 			humanCardClicked(index);
@@ -819,6 +1006,10 @@ public class GameMain extends GameState {
 		computerCardClicked(index - 4);
 	}
 	
+	/**
+	 * Called when player clicks one of their own cards
+	 * @param index
+	 */
 	public void humanCardClicked(int index){ // index is 1-4
 		if (gameState == 3) {
 			Card left = player.getHand().swapCard(index - 1, picked);
@@ -854,6 +1045,10 @@ public class GameMain extends GameState {
 		} // Using first draw two card like normal
 	}
 	
+	/**
+	 * Called when the player clicked a card from the computer's hand
+	 * @param index
+	 */
 	public void computerCardClicked(int index){ // index is 1-4
 		if (gameState == 7) {
 			yourSwap = opponent.getHand().removeCard(index);
@@ -861,6 +1056,9 @@ public class GameMain extends GameState {
 		}
 	}
 	
+	/**
+	 * Handle the end of a timer
+	 */
 	public void endWait(){
 		if(timerId == 1){
 			startGame2();
